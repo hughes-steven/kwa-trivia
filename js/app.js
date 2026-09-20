@@ -72,6 +72,7 @@
      Screens & focus management
      --------------------------------------------------------------------- */
   function show(name, focusEl) {
+    if (name !== "question" && typeof stopCelebration === "function") stopCelebration();
     for (const [key, node] of Object.entries(screens)) node.hidden = key !== name;
     const target = focusEl || screens[name].querySelector("h1");
     if (target) {
@@ -450,6 +451,8 @@
         LETTERS[correct] + ": " + item.options[correct] + ".";
     }
     $("reveal-text").textContent = message;
+    $("reveal").classList.toggle("is-correct", chosen === correct);
+    if (chosen === correct) celebrate();
 
     $("reveal").hidden = false;
     $("btn-reveal").hidden = true;
@@ -483,6 +486,79 @@
   $("btn-back-questions").addEventListener("click", leaveQuestion);
 
   $("btn-cancel").addEventListener("click", leaveQuestion);
+
+  /* ---------------------------------------------------------------------
+     Celebration: a confetti burst in brand colours when the room gets it
+     right. Purely decorative (aria-hidden, pointer-events: none), about
+     2.5 s long, no flashing, and skipped entirely under reduced motion.
+     --------------------------------------------------------------------- */
+  const confettiCanvas = $("celebrate");
+  let confettiFrame = null;
+
+  function stopCelebration() {
+    if (confettiFrame) cancelAnimationFrame(confettiFrame);
+    confettiFrame = null;
+    confettiCanvas.hidden = true;
+  }
+
+  function celebrate() {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const ctx = confettiCanvas.getContext("2d");
+    if (!ctx) return;
+    stopCelebration();
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const W = window.innerWidth, H = window.innerHeight;
+    confettiCanvas.width = W * dpr; confettiCanvas.height = H * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    confettiCanvas.hidden = false;
+
+    const COLORS = ["#f06828", "#02807e", "#ffbf47", "#4fc3c0", "#ffffff", "#ff9b6b"];
+    const pieces = [];
+    const burst = (x, y, count, spread, power) => {
+      for (let i = 0; i < count; i++) {
+        const angle = -Math.PI / 2 + (Math.random() - 0.5) * spread;
+        const speed = power * (0.55 + Math.random() * 0.45);
+        pieces.push({
+          x, y,
+          vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed,
+          w: 6 + Math.random() * 8, h: 4 + Math.random() * 6,
+          rot: Math.random() * Math.PI * 2, vr: (Math.random() - 0.5) * 0.3,
+          color: COLORS[Math.floor(Math.random() * COLORS.length)],
+          shape: Math.random() < 0.3 ? "circle" : "rect",
+        });
+      }
+    };
+    // Three firework-style bursts: bottom centre and both lower corners.
+    burst(W / 2, H * 0.8, 120, 1.6, 22);
+    burst(W * 0.12, H * 0.9, 70, 1.1, 20);
+    burst(W * 0.88, H * 0.9, 70, 1.1, 20);
+
+    const DURATION = 2600;
+    const start = performance.now();
+    let last = start;
+    const step = (now) => {
+      const dt = Math.min((now - last) / 16.67, 2); last = now;
+      const t = now - start;
+      ctx.clearRect(0, 0, W, H);
+      const fade = t > DURATION - 700 ? Math.max(0, (DURATION - t) / 700) : 1;
+      for (const p of pieces) {
+        p.vy += 0.55 * dt;            // gravity
+        p.vx *= 0.985; p.vy *= 0.985; // drag
+        p.x += p.vx * dt; p.y += p.vy * dt; p.rot += p.vr * dt;
+        if (p.y > H + 20) continue;
+        ctx.save();
+        ctx.globalAlpha = fade;
+        ctx.translate(p.x, p.y); ctx.rotate(p.rot);
+        ctx.fillStyle = p.color;
+        if (p.shape === "circle") { ctx.beginPath(); ctx.arc(0, 0, p.w / 2, 0, Math.PI * 2); ctx.fill(); }
+        else ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+        ctx.restore();
+      }
+      if (t < DURATION) confettiFrame = requestAnimationFrame(step);
+      else stopCelebration();
+    };
+    confettiFrame = requestAnimationFrame(step);
+  }
 
   /* ---------------------------------------------------------------------
      Results
