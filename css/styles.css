@@ -34,6 +34,9 @@
   --danger-tint: #fdecea;
   --focus: #1f2a2a;
   --focus-halo: #ffbf47;
+  --played-bg: #e9ecec;
+  --played-text: #4d5a5a;   /* 6.6:1 on played-bg */
+  --played-border: #8a9797;
 
   --radius: 12px;
   --shadow: 0 1px 2px rgba(0,0,0,.06), 0 4px 16px rgba(0,0,0,.06);
@@ -66,6 +69,9 @@
     --danger-tint: #3d1a18;
     --focus: #ffffff;
     --focus-halo: #ffbf47;
+    --played-bg: #0c1111;
+    --played-text: #a9b6b6;
+    --played-border: #566666;
     --shadow: 0 1px 2px rgba(0,0,0,.4), 0 4px 16px rgba(0,0,0,.35);
   }
 }
@@ -76,6 +82,7 @@
   --text: #f1f5f5; --text-muted: #b9c6c6; --link: #9be0dd;
   --success: #7bd695; --success-tint: #17331f; --danger: #ff9b93; --danger-tint: #3d1a18;
   --focus: #ffffff; --focus-halo: #ffbf47;
+  --played-bg: #0c1111; --played-text: #a9b6b6; --played-border: #566666;
 }
 
 /* Text size control */
@@ -177,6 +184,8 @@ main:focus { outline: none; }
 .btn-ghost { background: transparent; color: var(--teal-deep); border-color: transparent; text-decoration: underline; text-underline-offset: .2em; }
 .btn-ghost:hover { background: var(--teal-tint); }
 .btn-ghost[aria-pressed="true"] { background: var(--teal); color: #fff; text-decoration: none; }
+.btn-reset { background: transparent; color: var(--orange-deep); border-color: var(--orange-deep); }
+.btn-reset:hover { background: var(--orange-tint); }
 .btn-large { font-size: 1.15rem; padding: .8rem 1.6rem; }
 .btn-small { font-size: .9rem; padding: .4rem .8rem; }
 .btn[disabled], .btn[aria-disabled="true"] { opacity: .55; cursor: not-allowed; }
@@ -250,8 +259,8 @@ main:focus { outline: none; }
 .category-card:hover { border-color: var(--teal); background: var(--teal-tint); }
 .category-card .name { font-family: var(--font-head); font-weight: 700; font-size: 1.2rem; color: var(--teal-deep); }
 .category-card .meta { color: var(--text-muted); font-size: .95rem; }
-.category-card.done { border-left-color: var(--border); }
-.category-card.done .name { color: var(--text-muted); }
+.category-card.done { border-left-color: var(--played-border); border-style: dashed; background: var(--played-bg); box-shadow: none; }
+.category-card.done .name { color: var(--played-text); }
 .category-card.done .meta::before { content: "✓ "; }
 
 /* Results */
@@ -267,9 +276,14 @@ main:focus { outline: none; }
 }
 .tile:hover { background: var(--teal-deep); }
 .tile .label { font-size: .8rem; font-weight: 600; letter-spacing: .05em; text-transform: uppercase; font-family: var(--font-body); }
-.tile.used { background: var(--bg-alt); color: var(--text-muted); border-color: var(--border); box-shadow: none; text-decoration: line-through; cursor: default; }
-.tile.used .label { text-decoration: none; }
-.tile.used:hover { background: var(--bg-alt); }
+/* Played tiles: unmistakably different — muted fill, dashed outline, checkmark, "Played" label */
+.tile.used {
+  background: var(--played-bg); color: var(--played-text); border: 3px dashed var(--played-border);
+  box-shadow: none; cursor: default; font-size: 1.35rem;
+}
+.tile.used .num { opacity: .85; }
+.tile.used .label { color: var(--played-text); }
+.tile.used:hover { background: var(--played-bg); }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .tile:not(.used) { color: #0b1514; } }
 :root[data-theme="dark"] .tile:not(.used) { color: #0b1514; }
 
@@ -327,6 +341,7 @@ main:focus { outline: none; }
   .btn-primary, .tile:not(.used) { forced-color-adjust: none; background: ButtonText; color: Canvas; }
   .option.correct { outline: 4px double Highlight; }
   .option.wrong  { outline: 4px dashed ButtonText; }
+  .tile.used, .category-card.done { forced-color-adjust: none; background: Canvas; color: GrayText; border: 3px dashed GrayText; }
 }
 
 @media print {

@@ -44,6 +44,7 @@
           <button type="button" class="btn btn-ghost btn-small" data-textsize="xlarge" aria-pressed="false">Extra large</button>
         </div>
         <button type="button" class="btn btn-ghost btn-small" id="btn-help" aria-haspopup="dialog">Help</button>
+        <button type="button" class="btn btn-reset btn-small" id="btn-reset" aria-haspopup="dialog">Reset game</button>
       </div>
     </div>
   </header>
@@ -58,7 +59,6 @@
       <form id="setup-form" class="card setup-form" novalidate>
         <div class="actions actions-start">
           <button type="submit" class="btn btn-primary btn-large">Start game</button>
-          <button type="button" class="btn btn-secondary btn-large" id="btn-resume" hidden>Continue saved game</button>
         </div>
       </form>
     </section>
@@ -120,7 +120,7 @@
           <div class="actions">
             <button type="button" class="btn btn-primary" id="btn-reveal">Reveal answer</button>
             <button type="button" class="btn btn-secondary" id="btn-next" hidden>Back to categories</button>
-            <button type="button" class="btn btn-ghost" id="btn-cancel">Cancel &amp; go back</button>
+            <button type="button" class="btn btn-ghost" id="btn-cancel">Back without revealing</button>
           </div>
       </div>
     </section>
@@ -134,7 +134,7 @@
         <ul class="summary-list" id="results-categories"></ul>
       </div>
       <div class="actions">
-        <button type="button" class="btn btn-primary btn-large" id="btn-new-game">Start a new game</button>
+        <button type="button" class="btn btn-primary btn-large" id="btn-new-game">Reset and start again</button>
         <button type="button" class="btn btn-ghost" id="btn-results-back">Back to the board</button>
       </div>
     </section>
@@ -154,10 +154,11 @@
       <h2 id="help-heading">How to play</h2>
       <ol>
         <li>Press <strong>Start game</strong>.</li>
-        <li>Press <strong>Roll the dice</strong> to pick a category at random (or choose one yourself), then pick a question number. Questions you have already used are marked as answered.</li>
+        <li>Press <strong>Roll the dice</strong> to pick a category at random (or choose one yourself), then pick a question number.</li>
+        <li>As soon as a question is opened it is marked as <strong>played</strong> with a checkmark, and stays that way until you press <strong>Reset game</strong>.</li>
         <li>Read the question aloud. When someone answers, press their choice to check it, or press <strong>Reveal answer</strong>.</li>
         <li>Go back to the categories and pick the next one.</li>
-        <li>Press <strong>End game</strong> at any time to wrap up.</li>
+        <li>Press <strong>End game</strong> at any time to wrap up, or <strong>Reset game</strong> in the top corner to make every question available again.</li>
       </ol>
       <h3>Keyboard shortcuts</h3>
       <ul class="shortcut-list">
@@ -165,7 +166,7 @@
         <li>On a question: <kbd>A</kbd> <kbd>B</kbd> <kbd>C</kbd> <kbd>D</kbd> choose an answer, <kbd>R</kbd> reveals it.</li>
         <li><kbd>Esc</kbd> goes back to the previous screen.</li>
       </ul>
-      <p>Your game is saved in this browser, so you can refresh the page or come back later and continue.</p>
+      <p>Played questions are remembered in this browser, so you can refresh the page or come back later and continue where you left off.</p>
       <div class="actions">
         <button type="submit" class="btn btn-primary" autofocus>Close</button>
       </div>

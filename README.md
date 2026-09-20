@@ -9,12 +9,14 @@ build step, no accounts and no tracking.
 ## How to play
 
 1. Press **Start game**.
-2. Roll the dice to pick a category at random (or choose one yourself), then pick a question number. Used questions are marked as answered.
+2. Roll the dice to pick a category at random (or choose one yourself), then pick a question number.
+   As soon as a question is opened it is marked as played (checkmark, dashed outline) and stays that way.
 3. Read the question aloud. Press the answer people call out to check it, or press **Reveal answer**.
 4. Head back to the categories and pick the next one.
 5. Press **End game** whenever you like to wrap up.
+6. **Reset game** (top corner) makes every question available again, after a confirmation.
 
-The game is saved in the browser, so refreshing the page or coming back later keeps your progress.
+Played questions are remembered in the browser, so refreshing the page or coming back days later keeps your progress.
 Use **Help** in the top corner for keyboard shortcuts.
 
 ## Editing the questions

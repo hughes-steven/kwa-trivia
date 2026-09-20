@@ -116,12 +116,6 @@
     announce("Game started. Roll the dice to pick a category.");
   });
 
-  $("btn-resume").addEventListener("click", () => {
-    renderBoard();
-    show("board");
-    announce("Saved game loaded. " + usedCount() + " of " + totalQuestions + " questions already used.");
-  });
-
   /* ---------------------------------------------------------------------
      Persistence
      --------------------------------------------------------------------- */
@@ -131,10 +125,24 @@
     const saved = safeGet(STORAGE_KEY);
     if (saved && saved.used && typeof saved.used === "object") {
       game = saved;
-      $("btn-resume").hidden = false;
-      $("btn-resume").textContent = "Continue saved game (" + usedCount() + " of " + totalQuestions + " used)";
+      return true;
     }
+    return false;
   }
+
+  /* Global reset: clears every played question. Confirmed first. */
+  async function resetGame() {
+    const ok = await confirm("Reset the game? Every question will be available again. This cannot be undone.");
+    if (!ok) return false;
+    game = { used: {}, started: new Date().toISOString() };
+    save();
+    current = null;
+    renderBoard();
+    show("board");
+    announce("Game reset. All " + totalQuestions + " questions are available again.", true);
+    return true;
+  }
+  $("btn-reset").addEventListener("click", resetGame);
 
   /* ---------------------------------------------------------------------
      Board (categories)
@@ -145,7 +153,10 @@
     DATA.categories.forEach((cat, c) => {
       const remaining = cat.questions.filter((_, q) => !isUsed(c, q)).length;
       const done = remaining === 0;
-      const meta = done ? "All " + cat.questions.length + " answered" : remaining + " of " + cat.questions.length + " left";
+      const played = cat.questions.length - remaining;
+      const meta = done
+        ? "All " + cat.questions.length + " played"
+        : (played ? played + " played, " + remaining + " left" : cat.questions.length + " questions");
       const btn = el("button", {
         type: "button",
         class: "category-card" + (done ? " done" : ""),
@@ -320,7 +331,7 @@
     const remaining = cat.questions.filter((_, q) => !isUsed(c, q)).length;
     $("category-progress").textContent = remaining
       ? "Choose a question. " + remaining + " of " + cat.questions.length + " left."
-      : "All questions in this category have been answered.";
+      : "Every question in this category has been played. Press Reset game to play them again.";
     const grid = $("tile-grid");
     grid.innerHTML = "";
     cat.questions.forEach((_, q) => {
@@ -328,11 +339,11 @@
       const tile = el("button", {
         type: "button",
         class: "tile" + (used ? " used" : ""),
-        "aria-label": "Question " + (q + 1) + (used ? ", already answered" : ""),
+        "aria-label": "Question " + (q + 1) + (used ? ", already played" : ""),
         onclick: () => { lastFocus = tile; openQuestion(c, q); },
       }, [
-        el("span", { "aria-hidden": "true", text: String(q + 1) }),
-        el("span", { class: "label", "aria-hidden": "true", text: used ? "Answered" : "Question" }),
+        el("span", { class: "num", "aria-hidden": "true", text: (used ? "\u2713 " : "") + (q + 1) }),
+        el("span", { class: "label", "aria-hidden": "true", text: used ? "Played" : "Question" }),
       ]);
       if (used) tile.setAttribute("aria-disabled", "true");
       grid.append(el("div", { role: "listitem" }, tile));
@@ -350,12 +361,13 @@
      Question screen
      --------------------------------------------------------------------- */
   function openQuestion(c, q) {
-    if (isUsed(c, q)) {
-      // Allow re-viewing an answered question, but make it clear it's been used.
-      announce("This question was already answered. Showing it again for review.");
-    }
+    const replay = isUsed(c, q);
     current = { c, q, chosen: null, revealed: false };
     currentCategory = c;
+    // Selecting a question marks it as played immediately, and it stays that
+    // way until the host presses Reset game.
+    game.used[c + "-" + q] = true;
+    save();
     const cat = DATA.categories[c];
     const item = cat.questions[q];
 
@@ -386,7 +398,7 @@
     $("btn-cancel").hidden = false;
     $("btn-next").hidden = true;
     show("question");
-    announce(cat.name + ", question " + (q + 1) + ". " + item.q + " Choices: " +
+    announce((replay ? "This question was already played. " : "") + cat.name + ", question " + (q + 1) + ". " + item.q + " Choices: " +
       item.options.map((t, i) => LETTERS[i] + ", " + t).join(". "));
   }
 
@@ -431,9 +443,6 @@
     }
     $("reveal-text").textContent = message;
 
-    game.used[current.c + "-" + current.q] = true;
-    save();
-
     $("reveal").hidden = false;
     $("btn-reveal").hidden = true;
     $("btn-cancel").hidden = true;
@@ -459,10 +468,7 @@
     leaveQuestion();
   });
 
-  $("btn-cancel").addEventListener("click", () => {
-    // Cancelling before reveal does not mark the question as used.
-    leaveQuestion();
-  });
+  $("btn-cancel").addEventListener("click", leaveQuestion);
 
   /* ---------------------------------------------------------------------
      Results
@@ -482,14 +488,7 @@
     announce("Game over. " + $("results-summary").textContent);
   }
 
-  $("btn-new-game").addEventListener("click", async () => {
-    const ok = await confirm("Start a brand new game? All questions will be available again.");
-    if (!ok) return;
-    safeRemove(STORAGE_KEY);
-    game = null;
-    $("btn-resume").hidden = true;
-    show("setup");
-  });
+  $("btn-new-game").addEventListener("click", resetGame);
 
   $("btn-results-back").addEventListener("click", () => {
     renderBoard();
@@ -541,6 +540,11 @@
      Boot
      --------------------------------------------------------------------- */
   document.title = DATA.title || document.title;
-  loadSaved();
-  show("setup", null);
+  if (loadSaved()) {
+    // Played questions persist across visits: go straight to the board.
+    renderBoard();
+    show("board");
+  } else {
+    show("setup", null);
+  }
 })();
