@@ -1,0 +1,48 @@
+# Deploys the site to GitHub Pages on every push to main.
+#
+# Why a workflow instead of "deploy from branch": GitHub Pages caches files
+# for 10 minutes, so right after a push a visitor could get the new
+# index.html with the old app.js (or vice versa) and the game would break
+# until the cache cleared. Stamping the CSS/JS/data URLs with the commit
+# SHA means each index.html always loads the matching files.
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Stamp asset URLs with the commit SHA
+        run: |
+          v="${GITHUB_SHA::8}"
+          sed -i -E \
+            -e "s#(href=\"css/styles\.css)\"#\1?v=$v\"#" \
+            -e "s#(src=\"js/app\.js)\"#\1?v=$v\"#" \
+            -e "s#(src=\"data/questions\.js)\"#\1?v=$v\"#" \
+            index.html
+          grep -n "?v=" index.html
+
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+      - id: deployment
+        uses: actions/deploy-pages@v4

@@ -33,7 +33,8 @@ All questions live in one file: [`data/questions.js`](data/questions.js). Open i
 
 - Add, remove or reorder questions and categories freely.
 - Keep four options per question.
-- Commit and push; GitHub Pages republishes the site automatically within a minute or two.
+- Commit and push; the site republishes automatically within a minute or two (see the Actions tab).
+  Visitors who already had the page open may need a refresh; the browser cache can hold the old version for up to ten minutes.
 
 The **Current Events** category goes stale quickly. Refresh it before each event.
 
