@@ -259,8 +259,8 @@
     rollResult.classList.add("rolling");
     rollResult.setAttribute("aria-hidden", "true");
     let step = 0;
-    const totalSteps = 16;
-    let delay = 70;
+    const totalSteps = 12;
+    let delay = 60;
     const tick = () => {
       let idx;
       do { idx = Math.floor(Math.random() * names.length); } while (names.length > 1 && names[idx] === rollResult.textContent);
