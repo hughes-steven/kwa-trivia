@@ -226,8 +226,9 @@
     rollResult.textContent = "Press the button and let the dice choose.";
     btnRoll.removeAttribute("aria-disabled");
     btnRoll.textContent = "Roll the dice";
-    btnRoll.classList.replace("btn-secondary", "btn-primary");
+    btnRoll.className = "btn btn-primary btn-large";
     btnRollGo.hidden = true;
+    dieEl.closest(".roller").classList.remove("landed");
     rollResult.removeAttribute("aria-hidden");
   }
 
@@ -264,8 +265,10 @@
       rollResult.textContent = name + "!";
       btnRoll.removeAttribute("aria-disabled");
       btnRoll.textContent = "Roll again";
-      // Once a category has landed, opening it is the main action; rolling again is secondary.
-      btnRoll.classList.replace("btn-primary", "btn-secondary");
+      // Once a category has landed, opening it is the one clear action;
+      // rolling again is demoted to an underlined text link beneath it.
+      btnRoll.className = "btn btn-ghost roll-again";
+      dieEl.closest(".roller").classList.add("landed");
       btnRollGo.hidden = false;
       btnRollGo.textContent = "Open " + name;
       announce("The dice picked " + name + ".", true);

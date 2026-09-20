@@ -153,17 +153,14 @@ main:focus { outline: none; }
 .header-row { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; padding-block: .75rem; }
 
 .brand { display: inline-flex; align-items: center; gap: .75rem; text-decoration: none; color: inherit; min-height: 44px; border-radius: 8px; }
-.brand-logo { display: block; height: 3.25rem; width: auto; max-width: min(60vw, 16rem); object-fit: contain; }
+.brand-logo { display: block; height: 3.5rem; width: auto; max-width: min(60vw, 17rem); object-fit: contain; }
 .brand-tag {
   font-family: var(--font-head); font-weight: 700; font-size: .95rem; letter-spacing: .14em; text-transform: uppercase;
   color: #fff; background: var(--teal); padding: .25rem .6rem; border-radius: 999px;
 }
-/* Dark mode: keep the logo's true brand colours by sitting it on a white plate */
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) .brand-logo { background: #fff; padding: .35rem .6rem; border-radius: 8px; box-sizing: content-box; }
   :root:not([data-theme="light"]) .brand-tag { color: #0b1514; }
 }
-:root[data-theme="dark"] .brand-logo { background: #fff; padding: .35rem .6rem; border-radius: 8px; box-sizing: content-box; }
 :root[data-theme="dark"] .brand-tag { color: #0b1514; }
 
 .header-tools { display: flex; align-items: center; gap: .5rem; flex-wrap: wrap; }
@@ -253,6 +250,9 @@ main:focus { outline: none; }
 .roll-result.landed { color: var(--orange-deep); }
 .roll-result.rolling { color: var(--text-muted); }
 .actions-center { justify-content: center; }
+.roller.landed .actions-center { flex-direction: column; gap: .35rem; }
+.roller.landed #btn-roll-go { font-size: 1.35rem; padding: .9rem 2.2rem; }
+.roll-again { font-size: 1rem; font-weight: 500; }
 .actions-end { justify-content: flex-end; margin-top: 1rem; }
 
 /* Collapsed manual category picker */
