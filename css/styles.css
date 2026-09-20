@@ -152,12 +152,19 @@ main:focus { outline: none; }
 .site-header { background: var(--surface); border-bottom: 4px solid var(--teal); }
 .header-row { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; padding-block: .75rem; }
 
-.brand { display: inline-flex; align-items: center; gap: .75rem; text-decoration: none; color: inherit; min-height: 44px; }
-.brand-mark svg { display: block; width: 2.5rem; height: 2.5rem; }
-.brand-word { font-family: var(--font-head); font-weight: 700; font-size: 1.5rem; line-height: 1; letter-spacing: -0.02em; }
-.brand-access { color: var(--orange-deep); }
-.brand-ability { color: var(--teal-deep); }
-.brand-sub { display: block; font-family: var(--font-head); font-weight: 600; font-size: .7rem; letter-spacing: .12em; text-transform: uppercase; color: var(--teal-deep); margin-top: .2rem; }
+.brand { display: inline-flex; align-items: center; gap: .75rem; text-decoration: none; color: inherit; min-height: 44px; border-radius: 8px; }
+.brand-logo { display: block; height: 3.25rem; width: auto; max-width: min(60vw, 16rem); object-fit: contain; }
+.brand-tag {
+  font-family: var(--font-head); font-weight: 700; font-size: .95rem; letter-spacing: .14em; text-transform: uppercase;
+  color: #fff; background: var(--teal); padding: .25rem .6rem; border-radius: 999px;
+}
+/* Dark mode: keep the logo's true brand colours by sitting it on a white plate */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .brand-logo { background: #fff; padding: .35rem .6rem; border-radius: 8px; box-sizing: content-box; }
+  :root:not([data-theme="light"]) .brand-tag { color: #0b1514; }
+}
+:root[data-theme="dark"] .brand-logo { background: #fff; padding: .35rem .6rem; border-radius: 8px; box-sizing: content-box; }
+:root[data-theme="dark"] .brand-tag { color: #0b1514; }
 
 .header-tools { display: flex; align-items: center; gap: .5rem; flex-wrap: wrap; }
 .text-size { display: inline-flex; gap: .25rem; }
@@ -246,7 +253,20 @@ main:focus { outline: none; }
 .roll-result.landed { color: var(--orange-deep); }
 .roll-result.rolling { color: var(--text-muted); }
 .actions-center { justify-content: center; }
-.section-title { margin-top: .5rem; }
+.actions-end { justify-content: flex-end; margin-top: 1rem; }
+
+/* Collapsed manual category picker */
+.manual { border: 2px solid var(--border); border-radius: var(--radius); background: var(--surface); }
+.manual-summary {
+  cursor: pointer; list-style: none; display: flex; align-items: center; gap: .6rem; min-height: 44px;
+  padding: .7rem 1rem; font-family: var(--font-head); font-weight: 600; color: var(--teal-deep); border-radius: var(--radius);
+}
+.manual-summary::-webkit-details-marker { display: none; }
+.manual-summary::before { content: ""; width: .6em; height: .6em; border-right: 3px solid currentColor; border-bottom: 3px solid currentColor; transform: rotate(-45deg); transition: transform .15s; flex-shrink: 0; margin-left: .2em; }
+.manual[open] .manual-summary::before { transform: rotate(45deg); }
+.manual-summary:hover { background: var(--teal-tint); }
+.manual[open] .manual-summary { border-bottom: 1px solid var(--border); border-radius: var(--radius) var(--radius) 0 0; }
+.manual-body { padding: 1rem; }
 
 /* Board */
 .category-grid { display: grid; gap: .9rem; grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr)); }

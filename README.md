@@ -9,10 +9,10 @@ build step, no accounts and no tracking.
 ## How to play
 
 1. Press **Start game**.
-2. Roll the dice to pick a category at random (or choose one yourself), then pick a question number.
+2. Roll the dice to pick a category at random (or expand "Choose a category yourself"), then pick a question number.
    As soon as a question is opened it is marked as played (checkmark, dashed outline) and stays that way.
 3. Read the question aloud. Press the answer people call out to check it, or press **Reveal answer**.
-4. Head back to the categories and pick the next one.
+4. Press **Roll the dice** to go straight to the next roll, or **Back to questions** for another from the same category.
 5. Press **End game** whenever you like to wrap up.
 6. **Reset game** (top corner) makes every question available again, after a confirmation.
 
@@ -78,7 +78,7 @@ css/styles.css      styles and brand colours
 js/app.js           game logic
 data/questions.js   the question bank — edit this
 scripts/            helper to import questions from the Excel workbook
-assets/             favicon
+assets/             logo and icons
 ```
 
 ## Licence

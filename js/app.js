@@ -266,6 +266,7 @@
 
     if (reduceMotion) { finish(); return; }
 
+    announce("Rolling the dice.");
     dieEl.classList.add("rolling");
     rollResult.classList.add("rolling");
     rollResult.setAttribute("aria-hidden", "true");
@@ -397,6 +398,7 @@
     $("btn-reveal").hidden = false;
     $("btn-cancel").hidden = false;
     $("btn-next").hidden = true;
+    $("btn-back-questions").hidden = true;
     show("question");
     announce((replay ? "This question was already played. " : "") + cat.name + ", question " + (q + 1) + ". " + item.q + " Choices: " +
       item.options.map((t, i) => LETTERS[i] + ", " + t).join(". "));
@@ -447,6 +449,7 @@
     $("btn-reveal").hidden = true;
     $("btn-cancel").hidden = true;
     $("btn-next").hidden = false;
+    $("btn-back-questions").hidden = false;
     announce(message, true);
     requestAnimationFrame(() => $("btn-next").focus());
   }
@@ -462,11 +465,16 @@
     show("category", target);
   }
 
+  // Primary CTA after an answer: back to the board and roll straight away.
   $("btn-next").addEventListener("click", () => {
-    const allDone = usedCount() >= totalQuestions;
-    if (allDone) { showResults(); return; }
-    leaveQuestion();
+    if (usedCount() >= totalQuestions) { showResults(); return; }
+    current = null;
+    renderBoard();
+    show("board", btnRoll);
+    rollDice();
   });
+
+  $("btn-back-questions").addEventListener("click", leaveQuestion);
 
   $("btn-cancel").addEventListener("click", leaveQuestion);
 
@@ -530,7 +538,7 @@
       const item = DATA.categories[current.c].questions[current.q];
       if (idx > -1 && idx < item.options.length && !current.revealed) { e.preventDefault(); choose(idx); return; }
       if (key === "R" && !current.revealed) { e.preventDefault(); reveal(); return; }
-      if (e.key === "Escape") { e.preventDefault(); (current.revealed ? $("btn-next") : $("btn-cancel")).click(); return; }
+      if (e.key === "Escape") { e.preventDefault(); (current.revealed ? $("btn-back-questions") : $("btn-cancel")).click(); return; }
     } else if (!screens.category.hidden && e.key === "Escape") {
       e.preventDefault(); $("btn-back-board").click();
     }
