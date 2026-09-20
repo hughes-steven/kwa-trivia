@@ -170,6 +170,7 @@
       grid.append(el("div", { role: "listitem" }, btn));
     });
     $("board-progress").textContent = usedCount() + " of " + totalQuestions + " questions used.";
+    $("manual-pick").open = false;
     resetRoller();
   }
 
@@ -222,9 +223,10 @@
     dieEl.classList.remove("rolling");
     rollResult.classList.remove("rolling", "landed");
     rollResult.textContent = "Press the button and let the dice choose.";
-    btnRoll.disabled = false;
+    btnRoll.removeAttribute("aria-disabled");
     btnRoll.textContent = "Roll the dice";
     btnRollGo.hidden = true;
+    rollResult.removeAttribute("aria-hidden");
   }
 
   function rollDice() {
@@ -243,7 +245,8 @@
 
     rolling = true;
     rolledCategory = null;
-    btnRoll.disabled = true;
+    // aria-disabled rather than disabled so keyboard focus stays on the button while it rolls.
+    btnRoll.setAttribute("aria-disabled", "true");
     btnRollGo.hidden = true;
     rollResult.classList.remove("landed");
 
@@ -255,8 +258,9 @@
       drawPips(1 + Math.floor(Math.random() * 6));
       rollResult.classList.remove("rolling");
       rollResult.classList.add("landed");
+      rollResult.removeAttribute("aria-hidden");
       rollResult.textContent = name + "!";
-      btnRoll.disabled = false;
+      btnRoll.removeAttribute("aria-disabled");
       btnRoll.textContent = "Roll again";
       btnRollGo.hidden = false;
       btnRollGo.textContent = "Open " + name;
@@ -270,22 +274,21 @@
     dieEl.classList.add("rolling");
     rollResult.classList.add("rolling");
     rollResult.setAttribute("aria-hidden", "true");
-    let step = 0;
-    const totalSteps = 12;
-    let delay = 60;
+
+    // Time-based so the roll lasts ~1.8 s of wall-clock time even if the
+    // browser throttles timers; the name changes slow down as it settles.
+    const DURATION = 1800;
+    const start = performance.now();
     const tick = () => {
+      const elapsed = performance.now() - start;
+      if (elapsed >= DURATION) { finish(); return; }
       let idx;
       do { idx = Math.floor(Math.random() * names.length); } while (names.length > 1 && names[idx] === rollResult.textContent);
       rollResult.textContent = names[idx];
       drawPips(1 + Math.floor(Math.random() * 6));
-      step++;
-      if (step < totalSteps) {
-        delay = Math.round(delay * 1.16);
-        rollTimer = setTimeout(tick, delay);
-      } else {
-        rollResult.removeAttribute("aria-hidden");
-        finish();
-      }
+      const progress = elapsed / DURATION;              // 0 → 1
+      const delay = 60 + Math.round(progress * progress * 340); // 60 ms → 400 ms
+      rollTimer = setTimeout(tick, Math.min(delay, DURATION - elapsed + 1));
     };
     tick();
   }

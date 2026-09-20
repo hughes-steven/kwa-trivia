@@ -195,7 +195,7 @@ main:focus { outline: none; }
 .btn-reset:hover { background: var(--orange-tint); }
 .btn-large { font-size: 1.15rem; padding: .8rem 1.6rem; }
 .btn-small { font-size: .9rem; padding: .4rem .8rem; }
-.btn[disabled], .btn[aria-disabled="true"] { opacity: .55; cursor: not-allowed; }
+.btn[disabled], .btn[aria-disabled="true"] { opacity: .55; cursor: wait; }
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) .btn-primary { color: #0b1514; }
