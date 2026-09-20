@@ -1,18 +1,18 @@
 # KW AccessAbility Trivia
 
 A friendly, accessible multiple-choice trivia game for [KW AccessAbility](https://www.kwaccessability.ca/) events.
-Ten categories, ten questions each, optional teams and timer. Runs entirely in the browser with no
+Ten categories, ten questions each, and an optional timer. One host runs it for the room. Runs entirely in the browser with no
 build step, no accounts and no tracking.
 
 **Play it:** https://hughes-steven.github.io/kwa-trivia/
 
 ## How to play
 
-1. Choose how many teams are playing (or "just for fun") and whether you want a timer.
-2. Pick a category, then a question number. Used questions are marked as answered.
-3. Read the question aloud. Press the team's choice to check it, or press **Reveal answer**.
-4. Give a point to the team that got it right, then head back to the categories.
-5. Press **End game** whenever you like to see the final scores.
+1. Choose whether you want a timer, then press **Start game**.
+2. Roll the dice to pick a category at random (or choose one yourself), then pick a question number. Used questions are marked as answered.
+3. Read the question aloud. Press the answer people call out to check it, or press **Reveal answer**.
+4. Head back to the categories and pick the next one.
+5. Press **End game** whenever you like to wrap up.
 
 The game is saved in the browser, so refreshing the page or coming back later keeps your progress.
 Use **Help** in the top corner for keyboard shortcuts.
@@ -56,12 +56,12 @@ Just open `index.html` in a browser. Nothing to install.
 Built to WCAG 2.2 AA. In particular:
 
 - Works fully with keyboard, mouse, touch and screen readers; focus moves to the new heading on every screen change.
-- Live announcements for questions, answers, scores and timer milestones (not every second).
+- Live announcements for questions, answers and timer milestones (not every second).
 - The timer is optional, never starts on its own, and can be paused or reset at any time.
 - Colour is never the only signal: correct and incorrect answers also get a symbol and text.
 - Every text and background pairing meets AA contrast in both light and dark mode.
 - Every button and control is at least 44×44 px.
-- Respects the system's reduced-motion, dark-mode and high-contrast (forced colours) settings.
+- Respects the system's reduced-motion (the dice roll then shows its result instantly), dark-mode and high-contrast (forced colours) settings.
 - In-app text size control (Normal / Large / Extra large), plus normal browser zoom up to 400%.
 
 If you find something that does not work well with your assistive technology, please

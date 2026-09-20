@@ -59,10 +59,9 @@
     results: $("screen-results"),
   };
 
-  let game = null;        // { teams:[{name,score}], timer:Number, used:{"c-q":true}, started:ISO }
+  let game = null;        // { used:{"c-q":true}, started:ISO }
   let current = null;     // { c, q, chosen:Number|null, revealed:Boolean }
   let currentCategory = null;
-  let timer = { total: 0, left: 0, id: null, running: false };
   let lastFocus = null;   // element to return focus to when going back
 
   const totalQuestions = DATA.categories.reduce((n, c) => n + c.questions.length, 0);
@@ -104,45 +103,17 @@
      Setup screen
      --------------------------------------------------------------------- */
   const setupForm = $("setup-form");
-  const teamNames = $("team-names");
-
-  function renderTeamNameInputs() {
-    const count = Number(setupForm.teamCount.value);
-    const existing = [...teamNames.querySelectorAll("input")].map((i) => i.value);
-    teamNames.innerHTML = "";
-    for (let i = 0; i < count; i++) {
-      const id = "team-name-" + i;
-      teamNames.append(
-        el("label", { for: id }, [
-          "Team " + (i + 1) + " name",
-          el("input", { id, type: "text", maxlength: "30", autocomplete: "off", value: existing[i] || "" }),
-        ])
-      );
-    }
-  }
-  setupForm.addEventListener("change", (e) => {
-    if (e.target.name === "teamCount") renderTeamNameInputs();
-  });
-  renderTeamNameInputs();
 
   setupForm.addEventListener("submit", (e) => {
     e.preventDefault();
-    const count = Number(setupForm.teamCount.value);
-    const inputs = [...teamNames.querySelectorAll("input")];
-    const teams = inputs.map((input, i) => ({
-      name: input.value.trim() || "Team " + (i + 1),
-      score: 0,
-    })).slice(0, count);
     game = {
-      teams,
-      timer: Number(setupForm.timer.value),
       used: {},
       started: new Date().toISOString(),
     };
     save();
     renderBoard();
     show("board");
-    announce("Game started. " + (teams.length ? teams.length + " teams. " : "") + "Choose a category.");
+    announce("Game started. Roll the dice to pick a category.");
   });
 
   $("btn-resume").addEventListener("click", () => {
@@ -158,7 +129,7 @@
 
   function loadSaved() {
     const saved = safeGet(STORAGE_KEY);
-    if (saved && saved.used && Array.isArray(saved.teams)) {
+    if (saved && saved.used && typeof saved.used === "object") {
       game = saved;
       $("btn-resume").hidden = false;
       $("btn-resume").textContent = "Continue saved game (" + usedCount() + " of " + totalQuestions + " used)";
@@ -188,42 +159,7 @@
       grid.append(el("div", { role: "listitem" }, btn));
     });
     $("board-progress").textContent = usedCount() + " of " + totalQuestions + " questions used.";
-    renderScores();
-  }
-
-  function renderScores() {
-    const lists = [$("score-list"), $("score-list-q")];
-    const hasTeams = game.teams.length > 0;
-    $("scoreboard").hidden = false;
-    document.querySelector(".scoreboard-compact").hidden = !hasTeams;
-    lists.forEach((list, idx) => {
-      list.innerHTML = "";
-      if (!hasTeams) {
-        list.append(el("li", { class: "hint", text: "Playing just for fun. No scores this game." }));
-        return;
-      }
-      game.teams.forEach((team, t) => {
-        const item = el("li", { class: "score-item" }, [
-          el("span", { class: "team", text: team.name }),
-          el("span", { class: "score", "aria-label": team.name + " score: " + team.score, text: String(team.score) }),
-        ]);
-        if (idx === 0) {
-          // Full scoreboard on the board screen gets +/- controls for corrections.
-          item.append(el("span", { class: "score-ctl" }, [
-            el("button", { type: "button", class: "btn btn-ghost btn-small", "aria-label": "Remove one point from " + team.name, text: "−1", onclick: () => adjust(t, -1) }),
-            el("button", { type: "button", class: "btn btn-ghost btn-small", "aria-label": "Add one point to " + team.name, text: "+1", onclick: () => adjust(t, 1) }),
-          ]));
-        }
-        list.append(item);
-      });
-    });
-  }
-
-  function adjust(t, delta) {
-    game.teams[t].score = Math.max(0, game.teams[t].score + delta);
-    save();
-    renderScores();
-    announce(game.teams[t].name + ": " + game.teams[t].score + " points.");
+    resetRoller();
   }
 
   function pickRandom(catIndex) {
@@ -236,9 +172,121 @@
     return pool[Math.floor(Math.random() * pool.length)];
   }
 
+  /* ---------------------------------------------------------------------
+     Dice roll: picks a random category that still has questions left.
+     Respects prefers-reduced-motion (result shown instantly, no cycling).
+     Only the final result is announced to screen readers.
+     --------------------------------------------------------------------- */
+  const PIPS = {
+    1: [[50, 50]],
+    2: [[28, 28], [72, 72]],
+    3: [[28, 28], [50, 50], [72, 72]],
+    4: [[28, 28], [72, 28], [28, 72], [72, 72]],
+    5: [[28, 28], [72, 28], [50, 50], [28, 72], [72, 72]],
+    6: [[28, 26], [72, 26], [28, 50], [72, 50], [28, 74], [72, 74]],
+  };
+  const dieEl = $("die");
+  const rollResult = $("roll-result");
+  const btnRoll = $("btn-roll");
+  const btnRollGo = $("btn-roll-go");
+  let rolling = false;
+  let rolledCategory = null;
+  let rollTimer = null;
+
+  function drawPips(n) {
+    const g = $("die-pips");
+    g.innerHTML = "";
+    for (const [cx, cy] of PIPS[n]) {
+      const c = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+      c.setAttribute("cx", cx); c.setAttribute("cy", cy); c.setAttribute("r", 8);
+      g.append(c);
+    }
+  }
+  drawPips(5);
+
+  function resetRoller() {
+    clearTimeout(rollTimer);
+    rolling = false;
+    rolledCategory = null;
+    dieEl.classList.remove("rolling");
+    rollResult.classList.remove("rolling", "landed");
+    rollResult.textContent = "Press the button and let the dice choose.";
+    btnRoll.disabled = false;
+    btnRoll.textContent = "Roll the dice";
+    btnRollGo.hidden = true;
+  }
+
+  function rollDice() {
+    if (rolling) return;
+    const available = DATA.categories
+      .map((cat, c) => ({ c, left: cat.questions.filter((_, q) => !isUsed(c, q)).length }))
+      .filter((x) => x.left > 0)
+      .map((x) => x.c);
+    if (!available.length) {
+      announce("Every question has been used. Press End game to wrap up.", true);
+      return;
+    }
+    const target = available[Math.floor(Math.random() * available.length)];
+    const names = DATA.categories.map((cat) => cat.name);
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    rolling = true;
+    rolledCategory = null;
+    btnRoll.disabled = true;
+    btnRollGo.hidden = true;
+    rollResult.classList.remove("landed");
+
+    const finish = () => {
+      rolling = false;
+      rolledCategory = target;
+      const name = names[target];
+      dieEl.classList.remove("rolling");
+      drawPips(1 + Math.floor(Math.random() * 6));
+      rollResult.classList.remove("rolling");
+      rollResult.classList.add("landed");
+      rollResult.textContent = name + "!";
+      btnRoll.disabled = false;
+      btnRoll.textContent = "Roll again";
+      btnRollGo.hidden = false;
+      btnRollGo.textContent = "Open " + name;
+      announce("The dice picked " + name + ".", true);
+      requestAnimationFrame(() => btnRollGo.focus());
+    };
+
+    if (reduceMotion) { finish(); return; }
+
+    dieEl.classList.add("rolling");
+    rollResult.classList.add("rolling");
+    rollResult.setAttribute("aria-hidden", "true");
+    let step = 0;
+    const totalSteps = 16;
+    let delay = 70;
+    const tick = () => {
+      let idx;
+      do { idx = Math.floor(Math.random() * names.length); } while (names.length > 1 && names[idx] === rollResult.textContent);
+      rollResult.textContent = names[idx];
+      drawPips(1 + Math.floor(Math.random() * 6));
+      step++;
+      if (step < totalSteps) {
+        delay = Math.round(delay * 1.16);
+        rollTimer = setTimeout(tick, delay);
+      } else {
+        rollResult.removeAttribute("aria-hidden");
+        finish();
+      }
+    };
+    tick();
+  }
+
+  btnRoll.addEventListener("click", rollDice);
+  btnRollGo.addEventListener("click", () => {
+    if (rolledCategory == null) return;
+    openCategory(rolledCategory, btnRoll);
+  });
+
   $("btn-random").addEventListener("click", (e) => {
     const pick = pickRandom(null);
-    if (!pick) { announce("Every question has been used. Press End game to see the scores.", true); return; }
+    if (!pick) { announce("Every question has been used. Press End game to wrap up.", true); return; }
     lastFocus = e.currentTarget;
     openQuestion(pick[0], pick[1]);
   });
@@ -251,7 +299,7 @@
   });
 
   $("btn-end").addEventListener("click", async () => {
-    const ok = await confirm("End the game now and show the final scores?");
+    const ok = await confirm("End the game now?");
     if (ok) showResults();
   });
 
@@ -337,10 +385,6 @@
     $("btn-reveal").hidden = false;
     $("btn-cancel").hidden = false;
     $("btn-next").hidden = true;
-    btnTimerStart.disabled = false;
-    $("btn-timer-reset").disabled = false;
-    setupTimer();
-    renderScores();
     show("question");
     announce(cat.name + ", question " + (q + 1) + ". " + item.q + " Choices: " +
       item.options.map((t, i) => LETTERS[i] + ", " + t).join(". "));
@@ -358,7 +402,6 @@
   function reveal() {
     if (!current || current.revealed) return;
     current.revealed = true;
-    stopTimer(true);
     const item = DATA.categories[current.c].questions[current.q];
     const correct = item.answer;
     const chosen = current.chosen;
@@ -388,28 +431,6 @@
     }
     $("reveal-text").textContent = message;
 
-    // Award buttons
-    const award = $("award");
-    const buttons = $("award-buttons");
-    buttons.innerHTML = "";
-    if (game.teams.length) {
-      award.hidden = false;
-      game.teams.forEach((team, t) => {
-        buttons.append(el("button", {
-          type: "button", class: "btn btn-secondary",
-          "aria-label": "Give a point to " + team.name,
-          text: team.name + " +1",
-          onclick: (e) => {
-            adjust(t, 1);
-            e.currentTarget.textContent = team.name + " ✓ (" + team.score + ")";
-            e.currentTarget.setAttribute("aria-label", "Point given to " + team.name + ". Score " + team.score + ". Press again to add another.");
-          },
-        }));
-      });
-    } else {
-      award.hidden = true;
-    }
-
     game.used[current.c + "-" + current.q] = true;
     save();
 
@@ -417,8 +438,6 @@
     $("btn-reveal").hidden = true;
     $("btn-cancel").hidden = true;
     $("btn-next").hidden = false;
-    btnTimerStart.disabled = true;
-    $("btn-timer-reset").disabled = true;
     announce(message, true);
     requestAnimationFrame(() => $("btn-next").focus());
   }
@@ -426,7 +445,6 @@
   $("btn-reveal").addEventListener("click", reveal);
 
   function leaveQuestion() {
-    stopTimer(true);
     current = null;
     renderCategory();
     // Return to the category tiles, focusing the tile we came from (or the first unused).
@@ -447,105 +465,25 @@
   });
 
   /* ---------------------------------------------------------------------
-     Timer — host-controlled, never auto-starts (WCAG 2.2.1 Timing Adjustable)
-     --------------------------------------------------------------------- */
-  const timerBox = $("timer");
-  const timerValue = $("timer-value");
-  const timerFill = $("timer-fill");
-  const btnTimerStart = $("btn-timer-start");
-
-  function setupTimer() {
-    stopTimer(true);
-    timer.total = game.timer;
-    timer.left = game.timer;
-    timerBox.hidden = !game.timer;
-    timerBox.classList.remove("low", "done");
-    renderTimer();
-  }
-
-  function renderTimer() {
-    timerValue.textContent = timer.left + " s";
-    timerFill.style.width = timer.total ? (timer.left / timer.total) * 100 + "%" : "0%";
-    btnTimerStart.textContent = timer.running ? "Pause timer" : (timer.left === timer.total ? "Start timer" : "Resume timer");
-    timerBox.setAttribute("aria-label", "Timer, " + timer.left + " seconds remaining");
-  }
-
-  function tick() {
-    timer.left -= 1;
-    if (timer.left <= 10) timerBox.classList.add("low");
-    if (timer.left === Math.ceil(timer.total / 2) && timer.total >= 20) announce(timer.left + " seconds left.");
-    if (timer.left === 10 && timer.total > 15) announce("10 seconds left.");
-    if (timer.left === 5) announce("5 seconds left.");
-    if (timer.left <= 0) {
-      timer.left = 0;
-      stopTimer(false);
-      timerBox.classList.add("done");
-      announce("Time's up.", true);
-    }
-    renderTimer();
-  }
-
-  function startTimer() {
-    if (timer.running || timer.left <= 0) return;
-    timer.running = true;
-    timer.id = setInterval(tick, 1000);
-    renderTimer();
-    announce("Timer started. " + timer.left + " seconds.");
-  }
-
-  function stopTimer(silent) {
-    if (timer.id) clearInterval(timer.id);
-    timer.id = null;
-    const wasRunning = timer.running;
-    timer.running = false;
-    renderTimer();
-    if (wasRunning && !silent) announce("Timer paused at " + timer.left + " seconds.");
-  }
-
-  btnTimerStart.addEventListener("click", () => {
-    if (timer.running) stopTimer(false);
-    else startTimer();
-  });
-
-  $("btn-timer-reset").addEventListener("click", () => {
-    stopTimer(true);
-    timer.left = timer.total;
-    timerBox.classList.remove("low", "done");
-    renderTimer();
-    announce("Timer reset to " + timer.total + " seconds.");
-  });
-
-  /* ---------------------------------------------------------------------
      Results
      --------------------------------------------------------------------- */
   function showResults() {
-    stopTimer(true);
-    const list = $("final-scores");
+    const list = $("results-categories");
     list.innerHTML = "";
-    const summary = $("results-summary");
-    if (!game.teams.length) {
-      summary.textContent = "Thanks for playing! You went through " + usedCount() + " of " + totalQuestions + " questions.";
-      list.append(el("li", { text: "No scores were kept this game." }));
-    } else {
-      const ranked = game.teams.map((t) => ({ ...t })).sort((a, b) => b.score - a.score);
-      const top = ranked[0].score;
-      const winners = ranked.filter((t) => t.score === top);
-      summary.textContent = winners.length > 1
-        ? "It's a tie between " + winners.map((w) => w.name).join(" and ") + " with " + top + " points each!"
-        : winners[0].name + " wins with " + top + " point" + (top === 1 ? "" : "s") + "!";
-      ranked.forEach((t) => {
-        list.append(el("li", {
-          class: t.score === top ? "winner" : "",
-          text: t.name + ": " + t.score + " point" + (t.score === 1 ? "" : "s") + (t.score === top ? " (winner)" : ""),
-        }));
-      });
-    }
+    const used = usedCount();
+    $("results-summary").textContent = used >= totalQuestions
+      ? "Every one of the " + totalQuestions + " questions has been played. Thanks for playing!"
+      : "Thanks for playing! You went through " + used + " of " + totalQuestions + " questions.";
+    DATA.categories.forEach((cat, c) => {
+      const done = cat.questions.filter((_, q) => isUsed(c, q)).length;
+      list.append(el("li", { text: cat.name + ": " + done + " of " + cat.questions.length + " played" }));
+    });
     show("results");
-    announce("Game over. " + summary.textContent);
+    announce("Game over. " + $("results-summary").textContent);
   }
 
   $("btn-new-game").addEventListener("click", async () => {
-    const ok = await confirm("Start a brand new game? The current scores and used questions will be cleared.");
+    const ok = await confirm("Start a brand new game? All questions will be available again.");
     if (!ok) return;
     safeRemove(STORAGE_KEY);
     game = null;

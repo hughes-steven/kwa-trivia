@@ -53,34 +53,10 @@
     <!-- Screen: Welcome / setup -->
     <section class="screen" id="screen-setup" aria-labelledby="setup-heading">
       <h1 id="setup-heading" class="page-title" tabindex="-1">Let's play trivia!</h1>
-      <p class="lead">Ten categories, ten questions each. Pick a category, choose a question, and see if your team knows the answer.</p>
+      <p class="lead">Ten categories, ten questions each. Pick a category, choose a question, and see if the room knows the answer.</p>
 
       <form id="setup-form" class="card setup-form" novalidate>
-        <fieldset class="field">
-          <legend>Teams</legend>
-          <p class="hint" id="teams-hint">Choose how many teams are playing. You can name them below.</p>
-          <div class="radio-row" role="radiogroup" aria-describedby="teams-hint">
-            <label class="chip"><input type="radio" name="teamCount" value="0"> Just for fun (no scores)</label>
-            <label class="chip"><input type="radio" name="teamCount" value="1"> 1 team</label>
-            <label class="chip"><input type="radio" name="teamCount" value="2" checked> 2 teams</label>
-            <label class="chip"><input type="radio" name="teamCount" value="3"> 3 teams</label>
-            <label class="chip"><input type="radio" name="teamCount" value="4"> 4 teams</label>
-          </div>
-          <div id="team-names" class="team-names"></div>
-        </fieldset>
-
-        <fieldset class="field">
-          <legend>Timer</legend>
-          <p class="hint" id="timer-hint">Optional. The timer only starts when the host presses "Start timer", and it can be paused at any time.</p>
-          <div class="radio-row" role="radiogroup" aria-describedby="timer-hint">
-            <label class="chip"><input type="radio" name="timer" value="0"> No timer</label>
-            <label class="chip"><input type="radio" name="timer" value="15"> 15 seconds</label>
-            <label class="chip"><input type="radio" name="timer" value="30" checked> 30 seconds</label>
-            <label class="chip"><input type="radio" name="timer" value="60"> 60 seconds</label>
-          </div>
-        </fieldset>
-
-        <div class="actions">
+        <div class="actions actions-start">
           <button type="submit" class="btn btn-primary btn-large">Start game</button>
           <button type="button" class="btn btn-secondary btn-large" id="btn-resume" hidden>Continue saved game</button>
         </div>
@@ -90,19 +66,29 @@
     <!-- Screen: Category board -->
     <section class="screen" id="screen-board" aria-labelledby="board-heading" hidden>
       <div class="screen-head">
-        <h1 id="board-heading" class="page-title" tabindex="-1">Choose a category</h1>
+        <h1 id="board-heading" class="page-title" tabindex="-1">Roll for a category</h1>
         <p class="hint" id="board-progress"></p>
       </div>
-      <div class="board-layout">
-        <div class="category-grid" id="category-grid" role="list" aria-label="Categories"></div>
-        <aside class="scoreboard card" id="scoreboard" aria-labelledby="scoreboard-heading">
-          <h2 id="scoreboard-heading">Scores</h2>
-          <ul class="score-list" id="score-list"></ul>
-          <div class="actions actions-stack">
-            <button type="button" class="btn btn-secondary" id="btn-random">Random question</button>
-            <button type="button" class="btn btn-ghost" id="btn-end">End game</button>
-          </div>
-        </aside>
+
+      <div class="roller card">
+        <div class="die" id="die" aria-hidden="true">
+          <svg viewBox="0 0 100 100" width="96" height="96" focusable="false">
+            <rect x="4" y="4" width="92" height="92" rx="18" class="die-face"/>
+            <g class="die-pips" id="die-pips"></g>
+          </svg>
+        </div>
+        <p class="roll-result" id="roll-result">Press the button and let the dice choose.</p>
+        <div class="actions actions-center">
+          <button type="button" class="btn btn-primary btn-large" id="btn-roll">Roll the dice</button>
+          <button type="button" class="btn btn-secondary btn-large" id="btn-roll-go" hidden>Open category</button>
+        </div>
+      </div>
+
+      <h2 class="section-title">Or choose a category yourself</h2>
+      <div class="category-grid" id="category-grid" role="list" aria-label="Categories"></div>
+      <div class="actions">
+        <button type="button" class="btn btn-secondary" id="btn-random">Random question from anywhere</button>
+        <button type="button" class="btn btn-ghost" id="btn-end">End game</button>
       </div>
     </section>
 
@@ -121,31 +107,14 @@
 
     <!-- Screen: Question -->
     <section class="screen" id="screen-question" aria-labelledby="question-heading" hidden>
-      <div class="question-layout">
-        <div class="question-main">
+      <div class="question-main">
           <p class="eyebrow" id="question-eyebrow"></p>
           <h1 id="question-heading" class="question-text" tabindex="-1"></h1>
-
-          <div class="timer card" id="timer" hidden aria-labelledby="timer-label">
-            <div class="timer-row">
-              <span id="timer-label" class="timer-label">Timer</span>
-              <span class="timer-value" id="timer-value" aria-hidden="true"></span>
-            </div>
-            <div class="timer-bar" aria-hidden="true"><div class="timer-fill" id="timer-fill"></div></div>
-            <div class="actions actions-inline">
-              <button type="button" class="btn btn-secondary btn-small" id="btn-timer-start">Start timer</button>
-              <button type="button" class="btn btn-ghost btn-small" id="btn-timer-reset">Reset timer</button>
-            </div>
-          </div>
 
           <div class="options" id="options" role="group" aria-label="Answer choices"></div>
 
           <div class="reveal card" id="reveal" hidden>
             <p class="reveal-text" id="reveal-text"></p>
-            <div id="award" class="award">
-              <p id="award-label" class="award-label">Give a point to:</p>
-              <div class="actions actions-inline" id="award-buttons" role="group" aria-labelledby="award-label"></div>
-            </div>
           </div>
 
           <div class="actions">
@@ -153,12 +122,6 @@
             <button type="button" class="btn btn-secondary" id="btn-next" hidden>Back to categories</button>
             <button type="button" class="btn btn-ghost" id="btn-cancel">Cancel &amp; go back</button>
           </div>
-        </div>
-
-        <aside class="scoreboard card scoreboard-compact" aria-labelledby="scoreboard-heading-q">
-          <h2 id="scoreboard-heading-q">Scores</h2>
-          <ul class="score-list" id="score-list-q"></ul>
-        </aside>
       </div>
     </section>
 
@@ -167,8 +130,8 @@
       <h1 id="results-heading" class="page-title" tabindex="-1">Game over</h1>
       <p class="lead" id="results-summary"></p>
       <div class="card">
-        <h2>Final scores</h2>
-        <ol class="score-list final" id="final-scores"></ol>
+        <h2>Categories</h2>
+        <ul class="summary-list" id="results-categories"></ul>
       </div>
       <div class="actions">
         <button type="button" class="btn btn-primary btn-large" id="btn-new-game">Start a new game</button>
@@ -190,11 +153,11 @@
     <form method="dialog">
       <h2 id="help-heading">How to play</h2>
       <ol>
-        <li>Choose the number of teams and whether you want a timer, then press <strong>Start game</strong>.</li>
-        <li>Pick a category, then pick a question number. Questions you have already used are marked as answered.</li>
-        <li>Read the question aloud. When a team answers, press their choice to check it, or press <strong>Reveal answer</strong>.</li>
-        <li>Give a point to the team that got it right, then go back to the categories.</li>
-        <li>Press <strong>End game</strong> at any time to see the final scores.</li>
+        <li>Press <strong>Start game</strong>.</li>
+        <li>Press <strong>Roll the dice</strong> to pick a category at random (or choose one yourself), then pick a question number. Questions you have already used are marked as answered.</li>
+        <li>Read the question aloud. When someone answers, press their choice to check it, or press <strong>Reveal answer</strong>.</li>
+        <li>Go back to the categories and pick the next one.</li>
+        <li>Press <strong>End game</strong> at any time to wrap up.</li>
       </ol>
       <h3>Keyboard shortcuts</h3>
       <ul class="shortcut-list">
