@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en-CA">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#02807e">
+  <meta name="description" content="A friendly, accessible multiple-choice trivia game for KW AccessAbility events. Works with keyboard, mouse, touch and screen readers.">
+  <title>KW AccessAbility Trivia</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Roboto:wght@400;500;700&display=swap">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <header class="site-header">
+    <div class="wrap header-row">
+      <a class="brand" href="./" aria-label="KW AccessAbility Trivia, home">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 40 40" width="40" height="40" focusable="false">
+            <g stroke-linecap="round" stroke-width="7" fill="none">
+              <path d="M20 8 v24" stroke="#f06828"/>
+              <path d="M8 20 h24" stroke="#007880"/>
+            </g>
+            <circle cx="20" cy="8" r="4.5" fill="#f06828"/>
+            <circle cx="20" cy="32" r="4.5" fill="#f06828"/>
+            <circle cx="8" cy="20" r="4.5" fill="#007880"/>
+            <circle cx="32" cy="20" r="4.5" fill="#007880"/>
+          </svg>
+        </span>
+        <span class="brand-text">
+          <span class="brand-word"><span class="brand-access">Access</span><span class="brand-ability">Ability</span></span>
+          <span class="brand-sub">Kitchener Waterloo &middot; Trivia</span>
+        </span>
+      </a>
+
+      <div class="header-tools">
+        <div class="text-size" role="group" aria-label="Text size">
+          <button type="button" class="btn btn-ghost btn-small" data-textsize="normal" aria-pressed="true">Normal text</button>
+          <button type="button" class="btn btn-ghost btn-small" data-textsize="large" aria-pressed="false">Large text</button>
+          <button type="button" class="btn btn-ghost btn-small" data-textsize="xlarge" aria-pressed="false">Extra large</button>
+        </div>
+        <button type="button" class="btn btn-ghost btn-small" id="btn-help" aria-haspopup="dialog">Help</button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main" class="wrap" tabindex="-1">
+
+    <!-- Screen: Welcome / setup -->
+    <section class="screen" id="screen-setup" aria-labelledby="setup-heading">
+      <h1 id="setup-heading" class="page-title" tabindex="-1">Let's play trivia!</h1>
+      <p class="lead">Ten categories, ten questions each. Pick a category, choose a question, and see if your team knows the answer.</p>
+
+      <form id="setup-form" class="card setup-form" novalidate>
+        <fieldset class="field">
+          <legend>Teams</legend>
+          <p class="hint" id="teams-hint">Choose how many teams are playing. You can name them below.</p>
+          <div class="radio-row" role="radiogroup" aria-describedby="teams-hint">
+            <label class="chip"><input type="radio" name="teamCount" value="0"> Just for fun (no scores)</label>
+            <label class="chip"><input type="radio" name="teamCount" value="1"> 1 team</label>
+            <label class="chip"><input type="radio" name="teamCount" value="2" checked> 2 teams</label>
+            <label class="chip"><input type="radio" name="teamCount" value="3"> 3 teams</label>
+            <label class="chip"><input type="radio" name="teamCount" value="4"> 4 teams</label>
+          </div>
+          <div id="team-names" class="team-names"></div>
+        </fieldset>
+
+        <fieldset class="field">
+          <legend>Timer</legend>
+          <p class="hint" id="timer-hint">Optional. The timer only starts when the host presses "Start timer", and it can be paused at any time.</p>
+          <div class="radio-row" role="radiogroup" aria-describedby="timer-hint">
+            <label class="chip"><input type="radio" name="timer" value="0"> No timer</label>
+            <label class="chip"><input type="radio" name="timer" value="15"> 15 seconds</label>
+            <label class="chip"><input type="radio" name="timer" value="30" checked> 30 seconds</label>
+            <label class="chip"><input type="radio" name="timer" value="60"> 60 seconds</label>
+          </div>
+        </fieldset>
+
+        <div class="actions">
+          <button type="submit" class="btn btn-primary btn-large">Start game</button>
+          <button type="button" class="btn btn-secondary btn-large" id="btn-resume" hidden>Continue saved game</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- Screen: Category board -->
+    <section class="screen" id="screen-board" aria-labelledby="board-heading" hidden>
+      <div class="screen-head">
+        <h1 id="board-heading" class="page-title" tabindex="-1">Choose a category</h1>
+        <p class="hint" id="board-progress"></p>
+      </div>
+      <div class="board-layout">
+        <div class="category-grid" id="category-grid" role="list" aria-label="Categories"></div>
+        <aside class="scoreboard card" id="scoreboard" aria-labelledby="scoreboard-heading">
+          <h2 id="scoreboard-heading">Scores</h2>
+          <ul class="score-list" id="score-list"></ul>
+          <div class="actions actions-stack">
+            <button type="button" class="btn btn-secondary" id="btn-random">Random question</button>
+            <button type="button" class="btn btn-ghost" id="btn-end">End game</button>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- Screen: Question picker within a category -->
+    <section class="screen" id="screen-category" aria-labelledby="category-heading" hidden>
+      <div class="screen-head">
+        <button type="button" class="btn btn-ghost back-link" id="btn-back-board">&larr; Back to categories</button>
+        <h1 id="category-heading" class="page-title" tabindex="-1"></h1>
+        <p class="hint" id="category-progress"></p>
+      </div>
+      <div class="tile-grid" id="tile-grid" role="list" aria-label="Questions"></div>
+      <div class="actions">
+        <button type="button" class="btn btn-secondary" id="btn-random-category">Random question in this category</button>
+      </div>
+    </section>
+
+    <!-- Screen: Question -->
+    <section class="screen" id="screen-question" aria-labelledby="question-heading" hidden>
+      <div class="question-layout">
+        <div class="question-main">
+          <p class="eyebrow" id="question-eyebrow"></p>
+          <h1 id="question-heading" class="question-text" tabindex="-1"></h1>
+
+          <div class="timer card" id="timer" hidden aria-labelledby="timer-label">
+            <div class="timer-row">
+              <span id="timer-label" class="timer-label">Timer</span>
+              <span class="timer-value" id="timer-value" aria-hidden="true"></span>
+            </div>
+            <div class="timer-bar" aria-hidden="true"><div class="timer-fill" id="timer-fill"></div></div>
+            <div class="actions actions-inline">
+              <button type="button" class="btn btn-secondary btn-small" id="btn-timer-start">Start timer</button>
+              <button type="button" class="btn btn-ghost btn-small" id="btn-timer-reset">Reset timer</button>
+            </div>
+          </div>
+
+          <div class="options" id="options" role="group" aria-label="Answer choices"></div>
+
+          <div class="reveal card" id="reveal" hidden>
+            <p class="reveal-text" id="reveal-text"></p>
+            <div id="award" class="award">
+              <p id="award-label" class="award-label">Give a point to:</p>
+              <div class="actions actions-inline" id="award-buttons" role="group" aria-labelledby="award-label"></div>
+            </div>
+          </div>
+
+          <div class="actions">
+            <button type="button" class="btn btn-primary" id="btn-reveal">Reveal answer</button>
+            <button type="button" class="btn btn-secondary" id="btn-next" hidden>Back to categories</button>
+            <button type="button" class="btn btn-ghost" id="btn-cancel">Cancel &amp; go back</button>
+          </div>
+        </div>
+
+        <aside class="scoreboard card scoreboard-compact" aria-labelledby="scoreboard-heading-q">
+          <h2 id="scoreboard-heading-q">Scores</h2>
+          <ul class="score-list" id="score-list-q"></ul>
+        </aside>
+      </div>
+    </section>
+
+    <!-- Screen: Results -->
+    <section class="screen" id="screen-results" aria-labelledby="results-heading" hidden>
+      <h1 id="results-heading" class="page-title" tabindex="-1">Game over</h1>
+      <p class="lead" id="results-summary"></p>
+      <div class="card">
+        <h2>Final scores</h2>
+        <ol class="score-list final" id="final-scores"></ol>
+      </div>
+      <div class="actions">
+        <button type="button" class="btn btn-primary btn-large" id="btn-new-game">Start a new game</button>
+        <button type="button" class="btn btn-ghost" id="btn-results-back">Back to the board</button>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <p>Made with care for <a href="https://www.kwaccessability.ca/" rel="noopener">KW AccessAbility</a>, supporting people with physical disabilities in Kitchener-Waterloo through recreation, technology and wellness.</p>
+      <p><a href="https://github.com/hughes-steven/kwa-trivia">Open source on GitHub</a> &middot; Questions are stored in <code>data/questions.js</code>.</p>
+    </div>
+  </footer>
+
+  <!-- Help dialog -->
+  <dialog id="help-dialog" class="dialog" aria-labelledby="help-heading">
+    <form method="dialog">
+      <h2 id="help-heading">How to play</h2>
+      <ol>
+        <li>Choose the number of teams and whether you want a timer, then press <strong>Start game</strong>.</li>
+        <li>Pick a category, then pick a question number. Questions you have already used are marked as answered.</li>
+        <li>Read the question aloud. When a team answers, press their choice to check it, or press <strong>Reveal answer</strong>.</li>
+        <li>Give a point to the team that got it right, then go back to the categories.</li>
+        <li>Press <strong>End game</strong> at any time to see the final scores.</li>
+      </ol>
+      <h3>Keyboard shortcuts</h3>
+      <ul class="shortcut-list">
+        <li><kbd>Tab</kbd> moves between buttons; <kbd>Enter</kbd> or <kbd>Space</kbd> presses them.</li>
+        <li>On a question: <kbd>A</kbd> <kbd>B</kbd> <kbd>C</kbd> <kbd>D</kbd> choose an answer, <kbd>R</kbd> reveals it.</li>
+        <li><kbd>Esc</kbd> goes back to the previous screen.</li>
+      </ul>
+      <p>Your game is saved in this browser, so you can refresh the page or come back later and continue.</p>
+      <div class="actions">
+        <button type="submit" class="btn btn-primary" autofocus>Close</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Confirm dialog -->
+  <dialog id="confirm-dialog" class="dialog" aria-labelledby="confirm-heading">
+    <form method="dialog">
+      <h2 id="confirm-heading">Are you sure?</h2>
+      <p id="confirm-text"></p>
+      <div class="actions">
+        <button type="submit" value="yes" class="btn btn-primary">Yes</button>
+        <button type="submit" value="no" class="btn btn-ghost" autofocus>No, go back</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div class="sr-only" id="announcer" aria-live="polite" aria-atomic="true"></div>
+  <div class="sr-only" id="announcer-assertive" aria-live="assertive" aria-atomic="true"></div>
+
+  <script src="data/questions.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
