@@ -205,6 +205,7 @@ main:focus { outline: none; }
 
 /* Setup form */
 .setup-form { margin-top: 1rem; }
+.actions-start { margin-top: 0; }
 .field { border: 0; padding: 0; margin: 0 0 1.5rem; min-width: 0; }
 .field legend { font-family: var(--font-head); font-weight: 600; font-size: 1.15rem; padding: 0; margin-bottom: .25rem; }
 .radio-row { display: flex; flex-wrap: wrap; gap: .5rem; }
@@ -307,18 +308,6 @@ main:focus { outline: none; }
 .reveal { margin-top: 1.25rem; border-left: 8px solid var(--success); }
 .reveal-text { font-size: 1.2rem; font-weight: 600; margin-bottom: 0; }
 
-/* Timer */
-.timer { margin-top: 1rem; padding: 1rem 1.25rem; }
-.timer-row { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; }
-.timer-label { font-family: var(--font-head); font-weight: 600; }
-.timer-value { font-family: var(--font-head); font-weight: 700; font-size: 2rem; font-variant-numeric: tabular-nums; color: var(--teal-deep); }
-.timer-bar { height: .75rem; border-radius: 999px; background: var(--bg-alt); border: 1px solid var(--border); overflow: hidden; margin-top: .5rem; }
-.timer-fill { height: 100%; width: 100%; background: var(--teal); transition: width 1s linear, background-color .3s; }
-.timer.low .timer-fill { background: var(--orange); }
-.timer.low .timer-value { color: var(--orange-deep); }
-.timer.done .timer-fill { background: var(--danger); }
-.timer.done .timer-value { color: var(--danger); }
-
 /* Dialogs */
 .dialog { border: 0; border-radius: var(--radius); padding: 0; max-width: min(92vw, 36rem); width: 100%; background: var(--surface); color: var(--text); box-shadow: 0 20px 60px rgba(0,0,0,.35); }
 .dialog::backdrop { background: rgba(0,0,0,.55); }
@@ -338,9 +327,8 @@ main:focus { outline: none; }
   .btn-primary, .tile:not(.used) { forced-color-adjust: none; background: ButtonText; color: Canvas; }
   .option.correct { outline: 4px double Highlight; }
   .option.wrong  { outline: 4px dashed ButtonText; }
-  .timer-fill { background: Highlight; }
 }
 
 @media print {
-  .site-header, .site-footer, .actions, .timer { display: none !important; }
+  .site-header, .site-footer, .actions { display: none !important; }
 }

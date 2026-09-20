@@ -1,14 +1,14 @@
 # KW AccessAbility Trivia
 
 A friendly, accessible multiple-choice trivia game for [KW AccessAbility](https://www.kwaccessability.ca/) events.
-Ten categories, ten questions each, and an optional timer. One host runs it for the room. Runs entirely in the browser with no
+Ten categories, ten questions each. One host runs it for the room: roll the dice for a category, pick a question, reveal the answer. Runs entirely in the browser with no
 build step, no accounts and no tracking.
 
 **Play it:** https://hughes-steven.github.io/kwa-trivia/
 
 ## How to play
 
-1. Choose whether you want a timer, then press **Start game**.
+1. Press **Start game**.
 2. Roll the dice to pick a category at random (or choose one yourself), then pick a question number. Used questions are marked as answered.
 3. Read the question aloud. Press the answer people call out to check it, or press **Reveal answer**.
 4. Head back to the categories and pick the next one.
@@ -56,8 +56,8 @@ Just open `index.html` in a browser. Nothing to install.
 Built to WCAG 2.2 AA. In particular:
 
 - Works fully with keyboard, mouse, touch and screen readers; focus moves to the new heading on every screen change.
-- Live announcements for questions, answers and timer milestones (not every second).
-- The timer is optional, never starts on its own, and can be paused or reset at any time.
+- Live announcements for the dice result, each question and each answer.
+- No time limits anywhere: the host sets the pace.
 - Colour is never the only signal: correct and incorrect answers also get a symbol and text.
 - Every text and background pairing meets AA contrast in both light and dark mode.
 - Every button and control is at least 44×44 px.
