@@ -36,13 +36,13 @@ window.KWA_TRIVIA = {
           "answer": 2
         },
         {
-          "q": "In May 2025, Cardinal Robert Prevost was elected pope and became the first pope from which country?",
-          "options": ["Argentina", "Poland", "United States", "Canada"],
-          "answer": 2
+          "q": "Which 2025 movie, based on a block-building video game, was one of the year's biggest box-office hits?",
+          "options": ["A Minecraft Movie", "The Super Mario Bros. Movie", "Sonic the Hedgehog 4", "Tetris: The Movie"],
+          "answer": 0
         },
         {
-          "q": "Who led the Liberal Party to victory in Canada's April 2025 federal election?",
-          "options": ["Justin Trudeau", "Mark Carney", "Pierre Poilievre", "Jagmeet Singh"],
+          "q": "In February 2025, which Canadian city co-hosted the Invictus Games for wounded and injured service members, alongside Whistler?",
+          "options": ["Calgary", "Vancouver", "Toronto", "Halifax"],
           "answer": 1
         },
         {
@@ -61,7 +61,7 @@ window.KWA_TRIVIA = {
           "answer": 2
         },
         {
-          "q": "Canadian astronaut Jeremy Hansen flew around the Moon in 2026 as part of which NASA mission?",
+          "q": "Canadian astronaut Jeremy Hansen was chosen to fly around the Moon as part of which NASA mission?",
           "options": ["Apollo 18", "Artemis II", "Orion One", "Gemini 13"],
           "answer": 1
         },
@@ -81,9 +81,9 @@ window.KWA_TRIVIA = {
           "answer": 0
         },
         {
-          "q": "In Samoa, it is a legally punishable offense to forget which specific occasion?",
-          "options": ["The Prime Minister's birthday", "Mother's Day", "Your wedding anniversary", "Your wife's birthday"],
-          "answer": 3
+          "q": "Since 2005, a bylaw in Rome, Italy, has made it illegal to keep a goldfish in what?",
+          "options": ["A round fishbowl", "A bathtub", "A fountain", "A teacup"],
+          "answer": 0
         },
         {
           "q": "In Venice, Italy, it is illegal to feed which type of bird in St. Mark's Square?",
@@ -101,9 +101,9 @@ window.KWA_TRIVIA = {
           "answer": 0
         },
         {
-          "q": "In Thailand, it is considered a crime to step on which item, because it carries an image of the king?",
-          "options": ["A newspaper", "A postage stamp", "Money", "A bus ticket"],
-          "answer": 2
+          "q": "In the Australian state of Victoria, it is against the law to do what in a public place if it annoys someone?",
+          "options": ["Whistle a tune", "Fly a kite", "Wear a hat", "Eat an ice cream"],
+          "answer": 1
         },
         {
           "q": "On Germany's Autobahn, it is illegal to stop for which reason, which the law considers avoidable?",
@@ -386,9 +386,9 @@ window.KWA_TRIVIA = {
           "answer": 1
         },
         {
-          "q": "In 'Breaking Bad', what was Walter White's job before he started making drugs?",
-          "options": ["Pharmacist", "Police officer", "High school chemistry teacher", "Car wash owner"],
-          "answer": 2
+          "q": "The Canadian sitcom 'Corner Gas' is set in which fictional Saskatchewan town?",
+          "options": ["Moose Hollow", "Dog River", "Wheat Ridge", "Prairie Bend"],
+          "answer": 1
         },
         {
           "q": "In 'Seinfeld', what is the first name of Jerry's eccentric neighbour, Kramer?",
@@ -467,7 +467,7 @@ window.KWA_TRIVIA = {
         },
         {
           "q": "If someone tells you to 'bite the bullet', what are they asking you to do?",
-          "options": ["Eat something very quickly before a deadline", "Stop talking immediately and listen closely", "Participate in a dangerous target shooting competition", "Face a painful situation with courage and get it over with"],
+          "options": ["Eat something very quickly before a deadline", "Stop talking immediately and listen closely", "Chew something crunchy as fast as you can", "Face a painful situation with courage and get it over with"],
           "answer": 3
         },
         {
