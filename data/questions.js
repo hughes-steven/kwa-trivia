@@ -31,12 +31,12 @@ window.KWA_TRIVIA = {
           "answer": 1
         },
         {
-          "q": "In August 2026, Haakon VIII became the new king of which European nation following the passing of his father?",
+          "q": "The 2024 Summer Paralympic Games were held in which city?",
           "options": [
-            "Netherlands",
-            "Norway",
-            "Sweden",
-            "Denmark"
+            "Tokyo",
+            "Paris",
+            "Los Angeles",
+            "London"
           ],
           "answer": 1
         },
@@ -61,7 +61,7 @@ window.KWA_TRIVIA = {
           "answer": 0
         },
         {
-          "q": "In February 2025, which Canadian city co-hosted the Invictus Games for wounded and injured service members, alongside Whistler?",
+          "q": "In February 2025, which Canadian city co-hosted the Invictus Games, an adaptive-sports event for service members and veterans, alongside Whistler?",
           "options": [
             "Calgary",
             "Vancouver",
@@ -231,22 +231,22 @@ window.KWA_TRIVIA = {
           "answer": 2
         },
         {
-          "q": "In 2020, which company became the first private business to launch astronauts to the International Space Station?",
+          "q": "In 2022, Canada's men's soccer team played at the World Cup for the first time since which year?",
           "options": [
-            "Boeing",
-            "SpaceX",
-            "Virgin Galactic",
-            "Blue Origin"
+            "1986",
+            "1994",
+            "2002",
+            "1970"
           ],
-          "answer": 1
+          "answer": 0
         },
         {
-          "q": "Which 2022 sequel saw Tom Cruise return as a naval fighter pilot, 36 years after the original?",
+          "q": "The 2022 Pixar film 'Turning Red', about a girl who turns into a giant red panda, is set in which Canadian city?",
           "options": [
-            "Top Gun: Maverick",
-            "Mission: Impossible",
-            "Days of Thunder",
-            "Jerry Maguire"
+            "Toronto",
+            "Vancouver",
+            "Montreal",
+            "Calgary"
           ],
           "answer": 0
         },
@@ -619,9 +619,9 @@ window.KWA_TRIVIA = {
           "q": "In Denmark, parents must choose their baby's name from what?",
           "options": [
             "A list of about 7,000 approved names",
-            "The names of Danish royalty",
+            "The names of famous Danish authors",
             "A list drawn up by the town mayor",
-            "Names of Viking gods"
+            "Names of Danish rivers"
           ],
           "answer": 0
         },
@@ -646,12 +646,12 @@ window.KWA_TRIVIA = {
           "answer": 1
         },
         {
-          "q": "The shortest war in recorded history, fought in 1896 between Britain and Zanzibar, lasted about how long?",
+          "q": "Which is the only letter of the alphabet that does not appear in the name of any U.S. state?",
           "options": [
-            "40 minutes",
-            "4 hours",
-            "4 weeks",
-            "4 days"
+            "Q",
+            "Z",
+            "X",
+            "J"
           ],
           "answer": 0
         },
@@ -676,14 +676,14 @@ window.KWA_TRIVIA = {
           "answer": 3
         },
         {
-          "q": "The inventor of the Pringles can asked to have his ashes buried in what?",
+          "q": "The Slinky toy was invented by accident by an engineer who was trying to make what?",
           "options": [
-            "A potato sack",
-            "A Pringles can",
-            "A frying pan",
-            "A vending machine"
+            "A spring to steady ship instruments",
+            "A door stopper",
+            "A bed frame",
+            "A fishing reel"
           ],
-          "answer": 1
+          "answer": 0
         },
         {
           "q": "For almost 20 years, the small town of Talkeetna, Alaska, had which animal as its honorary mayor?",
@@ -866,14 +866,14 @@ window.KWA_TRIVIA = {
           "answer": 3
         },
         {
-          "q": "Since 2008, a Japanese law has required companies to measure what on employees aged 40 to 74?",
+          "q": "Every spring in Gloucestershire, England, competitors race down a very steep hill chasing what?",
           "options": [
-            "Their height",
-            "Their shoe size",
-            "Their hair length",
-            "Their waistlines"
+            "A wheel of cheese",
+            "A pumpkin",
+            "A giant football",
+            "A wooden barrel"
           ],
-          "answer": 3
+          "answer": 0
         },
         {
           "q": "A 2005 bylaw in Turin, Italy, says dog owners must do what at least three times a day?",
@@ -1008,7 +1008,7 @@ window.KWA_TRIVIA = {
         {
           "q": "Try it: it is impossible to hum while doing what?",
           "options": [
-            "Standing on one leg",
+            "Wearing a hat",
             "Closing your eyes",
             "Holding your nose closed",
             "Wiggling your ears"
@@ -1081,7 +1081,7 @@ window.KWA_TRIVIA = {
           "answer": 1
         },
         {
-          "q": "Which animal has fingerprints so similar to a human's that they could confuse a crime scene investigator?",
+          "q": "Which animal has fingerprints so similar to a human's that even experts can mix them up?",
           "options": [
             "Chimpanzee",
             "Raccoon",
@@ -2111,24 +2111,24 @@ window.KWA_TRIVIA = {
           "answer": 1
         },
         {
-          "q": "Which Canadian actor from Vancouver plays the wisecracking superhero Deadpool?",
+          "q": "Which Vancouver-born actor voices the talking Pikachu in 'Pokémon: Detective Pikachu'?",
           "options": [
             "Ryan Reynolds",
             "Ryan Gosling",
             "Seth Rogen",
-            "Keanu Reeves"
+            "Michael Cera"
           ],
           "answer": 0
         },
         {
-          "q": "In the summer of 2023, which film's release on the same day as 'Oppenheimer' created the 'Barbenheimer' craze?",
+          "q": "In 'Toy Story', what is the name of the space ranger toy with the catchphrase 'To infinity and beyond'?",
           "options": [
-            "The Little Mermaid",
-            "Barbie",
-            "Mission: Impossible",
-            "Indiana Jones"
+            "Buzz Lightyear",
+            "Woody",
+            "Rex",
+            "Slinky Dog"
           ],
-          "answer": 1
+          "answer": 0
         },
         {
           "q": "In 'The Lord of the Rings' films, what is the name of the hobbit played by Elijah Wood who carries the ring?",
@@ -2351,14 +2351,14 @@ window.KWA_TRIVIA = {
           "answer": 1
         },
         {
-          "q": "In the film 'Speed', a bus cannot slow below 50 miles per hour. Which Toronto-raised actor stars?",
+          "q": "Which Toronto-raised actor voices the stunt rider Duke Caboom in 'Toy Story 4'?",
           "options": [
-            "Jim Carrey",
-            "Ryan Gosling",
             "Keanu Reeves",
-            "Ryan Reynolds"
+            "Ryan Reynolds",
+            "Jim Carrey",
+            "Will Arnett"
           ],
-          "answer": 2
+          "answer": 0
         },
         {
           "q": "In 'Moana', what is the name of the demigod who travels with her?",
@@ -2371,12 +2371,12 @@ window.KWA_TRIVIA = {
           "answer": 0
         },
         {
-          "q": "Vin Diesel plays Dominic Toretto in which film series?",
+          "q": "Vin Diesel voices which tree-like hero in 'Guardians of the Galaxy'?",
           "options": [
-            "Fast & Furious",
-            "Transformers",
-            "Mission: Impossible",
-            "The Bourne Identity"
+            "Groot",
+            "Rocket",
+            "Drax",
+            "Star-Lord"
           ],
           "answer": 0
         },
@@ -2461,7 +2461,7 @@ window.KWA_TRIVIA = {
           "answer": 2
         },
         {
-          "q": "Which actor plays the whip-cracking archaeologist Indiana Jones?",
+          "q": "Which actor plays the adventurous archaeologist Indiana Jones?",
           "options": [
             "Mel Gibson",
             "Tom Selleck",
@@ -2878,12 +2878,12 @@ window.KWA_TRIVIA = {
         {
           "q": "Which Canadian sprinter won the men's 100 metres gold at the 1996 Olympics?",
           "options": [
-            "Ben Johnson",
-            "Andre De Grasse",
             "Donovan Bailey",
-            "Bruny Surin"
+            "Bruny Surin",
+            "Andre De Grasse",
+            "Glenroy Gilbert"
           ],
-          "answer": 2
+          "answer": 0
         },
         {
           "q": "Sidney Crosby scored the 'Golden Goal' to win Olympic hockey gold for Canada at which Games?",
@@ -3053,7 +3053,7 @@ window.KWA_TRIVIA = {
         {
           "q": "What is the name of the fictional coffee shop where the characters frequently gather in the sitcom 'Friends'?",
           "options": [
-            "MacLaren's Pub",
+            "MacLaren's Café",
             "Monique's",
             "Central Perk",
             "The Bean Scene"
@@ -3061,14 +3061,14 @@ window.KWA_TRIVIA = {
           "answer": 2
         },
         {
-          "q": "How many seasons did the hit fantasy drama series 'Game of Thrones' run for?",
+          "q": "In 'The Flintstones', what is the name of Fred's best friend and next-door neighbour?",
           "options": [
-            "6",
-            "9",
-            "7",
-            "8"
+            "Barney Rubble",
+            "Joe Rockhead",
+            "Mr. Slate",
+            "Bamm-Bamm"
           ],
-          "answer": 3
+          "answer": 0
         },
         {
           "q": "In the American mockumentary sitcom 'The Office', what is the name of the paper company where the characters work?",
@@ -3085,20 +3085,20 @@ window.KWA_TRIVIA = {
           "options": [
             "The Flintstones",
             "The Simpsons",
-            "The Griffins",
+            "The Berenstain Bears",
             "The Jetsons"
           ],
           "answer": 1
         },
         {
-          "q": "Which Canadian sitcom follows the wealthy Rose family after they lose their fortune and move to a small town they once bought as a joke?",
+          "q": "The Canadian children's show 'The Big Comfy Couch' starred a clown named what?",
           "options": [
-            "Corner Gas",
-            "Kim's Convenience",
-            "Schitt's Creek",
-            "Letterkenny"
+            "Loonette",
+            "Molly",
+            "Granny Garbanzo",
+            "Snicklefritz"
           ],
-          "answer": 2
+          "answer": 0
         },
         {
           "q": "Longtime 'Jeopardy!' host Alex Trebek was born in which Ontario city?",
@@ -3141,14 +3141,14 @@ window.KWA_TRIVIA = {
           "answer": 0
         },
         {
-          "q": "The Netflix series 'Stranger Things' is set in which fictional Indiana town?",
+          "q": "In 'Paw Patrol', what is the name of the boy who leads the team of rescue pups?",
           "options": [
-            "Derry",
-            "Hawkins",
-            "Riverdale",
-            "Pawnee"
+            "Ryder",
+            "Chase",
+            "Marshall",
+            "Rubble"
           ],
-          "answer": 1
+          "answer": 0
         },
         {
           "q": "On the Canadian children's show 'Mr. Dressup', what was the name of the puppet dog who lived in the tree with Casey?",
@@ -3231,19 +3231,19 @@ window.KWA_TRIVIA = {
           "answer": 2
         },
         {
-          "q": "The sitcom 'Cheers' was set in a bar in which American city?",
+          "q": "On 'The Muppet Show', which bear tells terrible jokes and is Kermit's best friend?",
           "options": [
-            "Boston",
-            "Philadelphia",
-            "New York",
-            "Chicago"
+            "Fozzie",
+            "Gonzo",
+            "Rowlf",
+            "Animal"
           ],
           "answer": 0
         },
         {
           "q": "What is the name of the Simpsons' extremely friendly next-door neighbour?",
           "options": [
-            "Moe Szyslak",
+            "Milhouse Van Houten",
             "Ned Flanders",
             "Principal Skinner",
             "Apu"
@@ -3314,7 +3314,7 @@ window.KWA_TRIVIA = {
           "q": "Which Canadian sitcom is about a Korean-Canadian family running a store in Toronto?",
           "options": [
             "Kim's Convenience",
-            "Little Mosque",
+            "Mr. D",
             "Corner Gas",
             "Workin' Moms"
           ],
@@ -3454,19 +3454,19 @@ window.KWA_TRIVIA = {
           "q": "Which Canadian sketch comedy show launched John Candy, Eugene Levy and Catherine O'Hara?",
           "options": [
             "Kids in the Hall",
-            "Royal Canadian Air Farce",
-            "This Hour Has 22 Minutes",
+            "The Red Green Show",
+            "Baroness von Sketch Show",
             "SCTV"
           ],
           "answer": 3
         },
         {
-          "q": "Bob and Doug McKenzie, the toque-wearing hosts of 'Great White North', came from which show?",
+          "q": "'Polka Dot Door' was a long-running children's show from the public broadcaster of which province?",
           "options": [
-            "SCTV",
-            "The Red Green Show",
-            "Corner Gas",
-            "Trailer Park"
+            "Ontario",
+            "Quebec",
+            "Alberta",
+            "British Columbia"
           ],
           "answer": 0
         },
@@ -3566,14 +3566,14 @@ window.KWA_TRIVIA = {
           "answer": 0
         },
         {
-          "q": "What was the title of Michael Jackson's 1982 album that became the best-selling album of all time?",
+          "q": "Which Ottawa-born singer had 1990s hits with 'Ironic' and 'Hand in My Pocket'?",
           "options": [
-            "Dangerous",
-            "Off the Wall",
-            "Bad",
-            "Thriller"
+            "Alanis Morissette",
+            "Sarah McLachlan",
+            "Jann Arden",
+            "Chantal Kreviazuk"
           ],
-          "answer": 3
+          "answer": 0
         },
         {
           "q": "How many strings are traditionally found on a standard bass guitar?",
@@ -3596,7 +3596,7 @@ window.KWA_TRIVIA = {
           "answer": 1
         },
         {
-          "q": "Which Toronto-born rapper released the hit songs 'Hotline Bling' and 'God's Plan'?",
+          "q": "Which Toronto-born rapper released the hit songs 'Hotline Bling' and 'One Dance'?",
           "options": [
             "The Weeknd",
             "Justin Bieber",
@@ -3689,7 +3689,7 @@ window.KWA_TRIVIA = {
           "q": "Which Canadian rock band had a hit with 'Takin' Care of Business'?",
           "options": [
             "Triumph",
-            "April Wine",
+            "Trooper",
             "Bachman-Turner Overdrive",
             "Loverboy"
           ],
@@ -3719,7 +3719,7 @@ window.KWA_TRIVIA = {
           "q": "Abel Tesfaye is the real name of which Toronto singer?",
           "options": [
             "Drake",
-            "Tory Lanez",
+            "Shawn Mendes",
             "The Weeknd",
             "Daniel Caesar"
           ],
@@ -4071,14 +4071,14 @@ window.KWA_TRIVIA = {
           "answer": 0
         },
         {
-          "q": "If someone tells you to 'bite the bullet', what are they asking you to do?",
+          "q": "If two people are 'on the same page', what does that mean?",
           "options": [
-            "Eat something very quickly before a deadline",
-            "Stop talking immediately and listen closely",
-            "Chew something crunchy as fast as you can",
-            "Face a painful situation with courage and get it over with"
+            "They understand and agree with each other",
+            "They are reading the same book",
+            "They sit next to each other",
+            "They share a computer"
           ],
-          "answer": 3
+          "answer": 0
         },
         {
           "q": "What is the meaning of the idiom 'spill the beans'?",
@@ -4091,22 +4091,22 @@ window.KWA_TRIVIA = {
           "answer": 1
         },
         {
-          "q": "If an actor is told to 'break a leg' before a show, what is being wished for them?",
+          "q": "If someone says 'let's call it a day', what do they mean?",
           "options": [
-            "A short performance",
-            "Good luck",
-            "A quick recovery",
-            "A dramatic fall scene"
+            "Let's stop working for now",
+            "Let's name the day",
+            "Let's check the calendar",
+            "Let's start early"
           ],
-          "answer": 1
+          "answer": 0
         },
         {
-          "q": "If something 'costs an arm and a leg', what does that mean?",
+          "q": "If you are 'in hot water', what kind of situation are you in?",
           "options": [
-            "It is very expensive",
-            "It is dangerous to buy",
-            "It was paid for in instalments",
-            "It is a medical bill"
+            "You are in trouble",
+            "You are relaxing",
+            "You are cooking",
+            "You are swimming"
           ],
           "answer": 0
         },
@@ -4163,7 +4163,7 @@ window.KWA_TRIVIA = {
         {
           "q": "If you 'hit the nail on the head', what have you done?",
           "options": [
-            "Hurt yourself while building",
+            "Hung a picture perfectly",
             "Made a loud noise",
             "Finished a job quickly",
             "Said exactly the right thing"
@@ -4191,14 +4191,14 @@ window.KWA_TRIVIA = {
           "answer": 1
         },
         {
-          "q": "What are you doing if you are 'pulling someone's leg'?",
+          "q": "If you 'hit the books', what are you doing?",
           "options": [
-            "Annoying them",
-            "Racing them",
-            "Joking with them",
-            "Helping them stand up"
+            "Studying hard",
+            "Tidying the shelves",
+            "Returning library books",
+            "Getting angry at homework"
           ],
-          "answer": 2
+          "answer": 0
         },
         {
           "q": "If 'the ball is in your court', what does that mean?",
@@ -4403,7 +4403,7 @@ window.KWA_TRIVIA = {
         {
           "q": "What does it mean to 'throw in the towel'?",
           "options": [
-            "Start a fight",
+            "Wave to a friend",
             "Give up",
             "Finish a shower",
             "Do the laundry"

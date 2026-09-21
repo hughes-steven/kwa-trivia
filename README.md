@@ -38,6 +38,9 @@ All questions live in one file: [`data/questions.js`](data/questions.js). Open i
 
 The **Current Events** category goes stale quickly. Refresh it before each event.
 
+Before adding questions, read the content guidelines in [CONTRIBUTING.md](CONTRIBUTING.md):
+family friendly, no politics or religion, respectful about disability, and verifiable.
+
 ### Importing from the Excel workbook
 
 If you maintain the questions in the `KWA Trivia Game.xlsm` workbook, you can regenerate the file
@@ -80,6 +83,10 @@ data/questions.js   the question bank — edit this
 scripts/            helper to import questions from the Excel workbook
 assets/             logo and icons
 ```
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for content guidelines and [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md).
 
 ## Licence
 
