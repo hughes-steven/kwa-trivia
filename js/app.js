@@ -3,7 +3,8 @@
   "use strict";
 
   const DATA = window.KWA_TRIVIA;
-  const STORAGE_KEY = "kwa-trivia-game-v1";
+  const STORAGE_KEY = "kwa-trivia-game-v2";
+  const PER_CATEGORY = 10;   // questions drawn from each category for one game
   const PREFS_KEY = "kwa-trivia-prefs-v1";
   const LETTERS = ["A", "B", "C", "D", "E", "F"];
 
@@ -59,13 +60,48 @@
     results: $("screen-results"),
   };
 
-  let game = null;        // { used:{"c-q":true}, started:ISO }
+  let game = null;        // { used:{"c-q":true}, started:ISO, selection:[[bankIdx...] per category] }
+  let ACTIVE = [];        // the categories in play: same names, only the drawn questions
   let current = null;     // { c, q, chosen:Number|null, revealed:Boolean }
   let currentCategory = null;
   let lastFocus = null;   // element to return focus to when going back
 
-  const totalQuestions = DATA.categories.reduce((n, c) => n + c.questions.length, 0);
+  const bankSize = DATA.categories.reduce((n, c) => n + c.questions.length, 0);
+  let totalQuestions = 0;
   const usedCount = () => Object.keys(game.used).length;
+
+  /* Draw a fresh random set of PER_CATEGORY questions from every category. */
+  function drawSelection() {
+    return DATA.categories.map((cat) => {
+      const idx = cat.questions.map((_, i) => i);
+      for (let i = idx.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [idx[i], idx[j]] = [idx[j], idx[i]];
+      }
+      return idx.slice(0, Math.min(PER_CATEGORY, idx.length)).sort((a, b) => a - b);
+    });
+  }
+
+  function validSelection(sel) {
+    return Array.isArray(sel) && sel.length === DATA.categories.length &&
+      sel.every((ids, c) => Array.isArray(ids) && ids.length > 0 &&
+        ids.every((i) => Number.isInteger(i) && i >= 0 && i < DATA.categories[c].questions.length));
+  }
+
+  /* Build the in-play categories from the saved selection. */
+  function activate() {
+    ACTIVE = DATA.categories.map((cat, c) => ({
+      name: cat.name,
+      questions: game.selection[c].map((i) => cat.questions[i]),
+    }));
+    totalQuestions = ACTIVE.reduce((n, c) => n + c.questions.length, 0);
+  }
+
+  function newGame() {
+    game = { used: {}, started: new Date().toISOString(), selection: drawSelection() };
+    activate();
+    save();
+  }
   const isUsed = (c, q) => Boolean(game.used[c + "-" + q]);
 
   /* ---------------------------------------------------------------------
@@ -107,14 +143,10 @@
 
   setupForm.addEventListener("submit", (e) => {
     e.preventDefault();
-    game = {
-      used: {},
-      started: new Date().toISOString(),
-    };
-    save();
+    newGame();
     renderBoard();
     show("board");
-    announce("Game started. Roll the dice to pick a category.");
+    announce("Game started with " + totalQuestions + " questions. Roll the dice to pick a category.");
   });
 
   /* ---------------------------------------------------------------------
@@ -124,8 +156,9 @@
 
   function loadSaved() {
     const saved = safeGet(STORAGE_KEY);
-    if (saved && saved.used && typeof saved.used === "object") {
+    if (saved && saved.used && typeof saved.used === "object" && validSelection(saved.selection)) {
       game = saved;
+      activate();
       return true;
     }
     return false;
@@ -135,12 +168,11 @@
   async function resetGame() {
     const ok = await confirm("Reset the game? Every question will be available again. This cannot be undone.");
     if (!ok) return false;
-    game = { used: {}, started: new Date().toISOString() };
-    save();
+    newGame();
     current = null;
     renderBoard();
     show("board");
-    announce("Game reset. All " + totalQuestions + " questions are available again.", true);
+    announce("Game reset. A fresh set of " + totalQuestions + " questions has been drawn from the bank of " + bankSize + ".", true);
     return true;
   }
   $("btn-reset").addEventListener("click", resetGame);
@@ -151,7 +183,7 @@
   function renderBoard() {
     const grid = $("category-grid");
     grid.innerHTML = "";
-    DATA.categories.forEach((cat, c) => {
+    ACTIVE.forEach((cat, c) => {
       const remaining = cat.questions.filter((_, q) => !isUsed(c, q)).length;
       const done = remaining === 0;
       const played = cat.questions.length - remaining;
@@ -170,14 +202,14 @@
       ]);
       grid.append(el("div", { role: "listitem" }, btn));
     });
-    $("board-progress").textContent = usedCount() + " of " + totalQuestions + " questions used.";
+    $("board-progress").textContent = usedCount() + " of " + totalQuestions + " questions used. Reset game draws a fresh " + totalQuestions + " from a bank of " + bankSize + ".";
     $("manual-pick").open = false;
     resetRoller();
   }
 
   function pickRandom(catIndex) {
     const pool = [];
-    DATA.categories.forEach((cat, c) => {
+    ACTIVE.forEach((cat, c) => {
       if (catIndex != null && c !== catIndex) return;
       cat.questions.forEach((_, q) => { if (!isUsed(c, q)) pool.push([c, q]); });
     });
@@ -234,7 +266,7 @@
 
   function rollDice() {
     if (rolling) return;
-    const available = DATA.categories
+    const available = ACTIVE
       .map((cat, c) => ({ c, left: cat.questions.filter((_, q) => !isUsed(c, q)).length }))
       .filter((x) => x.left > 0)
       .map((x) => x.c);
@@ -243,7 +275,7 @@
       return;
     }
     const target = available[Math.floor(Math.random() * available.length)];
-    const names = DATA.categories.map((cat) => cat.name);
+    const names = ACTIVE.map((cat) => cat.name);
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     rolling = true;
@@ -337,7 +369,7 @@
 
   function renderCategory() {
     const c = currentCategory;
-    const cat = DATA.categories[c];
+    const cat = ACTIVE[c];
     $("category-heading").textContent = cat.name;
     const remaining = cat.questions.filter((_, q) => !isUsed(c, q)).length;
     $("category-progress").textContent = remaining
@@ -379,7 +411,7 @@
     // way until the host presses Reset game.
     game.used[c + "-" + q] = true;
     save();
-    const cat = DATA.categories[c];
+    const cat = ACTIVE[c];
     const item = cat.questions[q];
 
     $("question-eyebrow").textContent = cat.name + " · Question " + (q + 1) + " of " + cat.questions.length;
@@ -426,7 +458,7 @@
   function reveal() {
     if (!current || current.revealed) return;
     current.revealed = true;
-    const item = DATA.categories[current.c].questions[current.q];
+    const item = ACTIVE[current.c].questions[current.q];
     const correct = item.answer;
     const chosen = current.chosen;
 
@@ -573,7 +605,7 @@
     $("results-summary").textContent = used >= totalQuestions
       ? "Every one of the " + totalQuestions + " questions has been played. Thanks for playing!"
       : "Thanks for playing! You went through " + used + " of " + totalQuestions + " questions.";
-    DATA.categories.forEach((cat, c) => {
+    ACTIVE.forEach((cat, c) => {
       const done = cat.questions.filter((_, q) => isUsed(c, q)).length;
       list.append(el("li", { text: cat.name + ": " + done + " of " + cat.questions.length + " played" }));
     });
@@ -598,10 +630,21 @@
   function confirm(text) {
     return new Promise((resolve) => {
       $("confirm-text").textContent = text;
-      const onClose = () => {
+      const form = confirmDialog.querySelector("form");
+      let settled = false;
+      const settle = (value) => {
+        if (settled) return;
+        settled = true;
+        form.removeEventListener("submit", onSubmit);
         confirmDialog.removeEventListener("close", onClose);
-        resolve(confirmDialog.returnValue === "yes");
+        resolve(value);
       };
+      // The submit event fires synchronously when Yes/No is pressed. The close
+      // event is the fallback for Escape (and some browsers delay it in
+      // background tabs), so we listen for both.
+      const onSubmit = (e) => settle(Boolean(e.submitter && e.submitter.value === "yes"));
+      const onClose = () => settle(confirmDialog.returnValue === "yes");
+      form.addEventListener("submit", onSubmit);
       confirmDialog.addEventListener("close", onClose);
       confirmDialog.returnValue = "no";
       confirmDialog.showModal();
@@ -620,7 +663,7 @@
     if (!screens.question.hidden && current) {
       const key = e.key.toUpperCase();
       const idx = LETTERS.indexOf(key);
-      const item = DATA.categories[current.c].questions[current.q];
+      const item = ACTIVE[current.c].questions[current.q];
       if (idx > -1 && idx < item.options.length && !current.revealed) { e.preventDefault(); choose(idx); return; }
       if (key === "R" && !current.revealed) { e.preventDefault(); reveal(); return; }
       if (e.key === "Escape") { e.preventDefault(); (current.revealed ? $("btn-back-questions") : $("btn-cancel")).click(); return; }

@@ -1,7 +1,7 @@
 # KW AccessAbility Trivia
 
 A friendly, accessible multiple-choice trivia game for [KW AccessAbility](https://www.kwaccessability.ca/) events.
-Ten categories, ten questions each. One host runs it for the room: roll the dice for a category, pick a question, reveal the answer. Runs entirely in the browser with no
+Ten categories with a bank of 500 questions. Each game draws a fresh random 10 per category (100 in play). One host runs it for the room: roll the dice for a category, pick a question, reveal the answer. Runs entirely in the browser with no
 build step, no accounts and no tracking.
 
 **Play it:** https://hughes-steven.github.io/kwa-trivia/
@@ -14,7 +14,7 @@ build step, no accounts and no tracking.
 3. Read the question aloud. Press the answer people call out to check it, or press **Reveal answer**.
 4. Press **Roll the dice** to go straight to the next roll, or **Back to questions** for another from the same category.
 5. Press **End game** whenever you like to wrap up.
-6. **Reset game** (top corner) makes every question available again, after a confirmation.
+6. **Reset game** (top corner) draws a brand-new random set of 100 questions from the bank of 500, after a confirmation.
 
 Played questions are remembered in the browser, so refreshing the page or coming back days later keeps your progress.
 Use **Help** in the top corner for keyboard shortcuts.
@@ -31,7 +31,7 @@ All questions live in one file: [`data/questions.js`](data/questions.js). Open i
 }
 ```
 
-- Add, remove or reorder questions and categories freely.
+- Add, remove or reorder questions and categories freely. Each game draws 10 per category at random, so a category can hold as many as you like (the bank ships with 50 each).
 - Keep four options per question.
 - Commit and push; the site republishes automatically within a minute or two (see the Actions tab).
   Visitors who already had the page open may need a refresh; the browser cache can hold the old version for up to ten minutes.
